@@ -1,0 +1,6 @@
+{
+  "name": "SpaceGuard",
+  "description": "Lightweight disk space management and optimization system for Debian/Kali Linux with interactive dependency graph, container manager, system tray simulator, and live system audit.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
