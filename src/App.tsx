@@ -28,11 +28,11 @@ import Terminal from './components/Terminal';
 import GraphVisualizer from './components/GraphVisualizer';
 import SystemTray from './components/SystemTray';
 import PackageList from './components/PackageList';
-import LogoGenerator from './components/LogoGenerator';
-import PackagingView from './components/PackagingView';
 import ContainerManager from './components/ContainerManager';
 import DeepScanModule from './components/DeepScanModule';
 import { DiskSpaceMap } from './components/DiskSpaceMap';
+import SpaceGuardLogo from './components/SpaceGuardLogo';
+import SoftwareUpdateModal from './components/SoftwareUpdateModal';
 
 export default function App() {
   const { lang, setLang, toggleLang, t } = useLanguage();
@@ -45,9 +45,11 @@ export default function App() {
     cacheSizeMb: 2450
   });
   
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'cli' | 'graph' | 'logo' | 'packaging' | 'containers' | 'deepscan' | 'treemap'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'cli' | 'graph' | 'containers' | 'deepscan' | 'treemap'>('dashboard');
   const [selectedPackageName, setSelectedPackageName] = useState('metasploit-framework');
   const [variant, setVariant] = useState<UIViewVariant>('Pulse'); // Let's default to Pulse (Cyan Neon) as it maps perfectly to original design HTML
+  const [appVersion, setAppVersion] = useState('1.2.0');
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   
   // Custom toast notification system
   const [toast, setToast] = useState<{ message: string; show: boolean }>({ message: '', show: false });
@@ -195,13 +197,11 @@ export default function App() {
       {/* Header Top Bar matching Geometric Balance console style */}
       <header className={`px-8 py-4 border-b border-[#1a1f26] bg-[#0c1015] flex flex-col lg:flex-row items-center justify-between gap-4 z-30 sticky top-0`}>
         <div className="flex items-center gap-4">
-          <div className={`w-8 h-8 border-2 rotate-45 flex items-center justify-center shrink-0 ${style.accentText} border-current`}>
-            <div className="w-4 h-4 bg-current"></div>
-          </div>
+          <SpaceGuardLogo size={40} />
           <div>
             <div className="flex items-baseline gap-2">
               <h1 className={`text-xl font-bold tracking-[0.2em] uppercase font-sans ${style.accentText}`}>{t('appTitle')}</h1>
-              <span className="text-[10px] opacity-40 font-mono tracking-widest">v1.2.0</span>
+              <span className="text-[10px] opacity-40 font-mono tracking-widest">v{appVersion}</span>
             </div>
             <p className="text-[9px] text-[#4d5b6e] font-mono tracking-wider uppercase leading-none mt-1">{t('appSubtitle')}</p>
           </div>
@@ -217,8 +217,18 @@ export default function App() {
           <div className="hidden sm:block text-[#4d5b6e]">SECTOR: LEO-A4</div>
         </div>
 
-        {/* Language Switcher & UI Theme Selection & AppIndicator3 Tray dropdown */}
+        {/* Language Switcher & Software Update & UI Theme Selection & AppIndicator3 Tray dropdown */}
         <div className="flex flex-wrap items-center justify-center gap-3 shrink-0">
+          {/* Software Update Check Button */}
+          <button
+            onClick={() => setIsUpdateModalOpen(true)}
+            className="px-2.5 py-1 bg-cyan-500/10 border border-cyan-500/40 text-cyan-400 hover:bg-cyan-500/25 transition-all text-[10px] font-mono font-bold uppercase tracking-wider flex items-center gap-1.5 cursor-pointer"
+            title={t('btnCheckUpdates')}
+          >
+            <RefreshCw className="w-3 h-3 animate-spin" style={{ animationDuration: '6s' }} />
+            <span>{t('btnCheckUpdates')}</span>
+          </button>
+
           {/* Language Switcher Toggle */}
           <div className="flex bg-black/40 p-0.5 border border-[#1a1f26] text-[10px] font-mono tracking-wider items-center">
             <button
@@ -272,6 +282,14 @@ export default function App() {
         </div>
       </header>
 
+      {/* Software Update Modal */}
+      <SoftwareUpdateModal
+        isOpen={isUpdateModalOpen}
+        onClose={() => setIsUpdateModalOpen(false)}
+        variant={variant}
+        onUpdateSuccess={(newVer) => setAppVersion(newVer)}
+      />
+
       {/* Main Container */}
       <main className="max-w-7xl mx-auto p-4 space-y-4">
         
@@ -285,7 +303,7 @@ export default function App() {
           }`}>
             <Bell className="w-4 h-4 shrink-0 text-red-500 animate-bounce mt-0.5" />
             <div className="text-xs">
-              <span className="font-bold uppercase tracking-wider block mb-0.5">Komunikat Demona</span>
+              <span className="font-bold uppercase tracking-wider block mb-0.5">{t('daemonMessage')}</span>
               <p className="opacity-95 leading-relaxed">{toast.message}</p>
             </div>
           </div>
@@ -322,15 +340,15 @@ export default function App() {
               </svg>
               <div className="absolute flex flex-col items-center text-center">
                 <span className="text-6xl font-black font-mono tracking-tighter">{usagePercent}%</span>
-                <span className="text-[10px] uppercase tracking-widest opacity-40 mt-1">zajęte miejsce</span>
-                <span className="text-xs opacity-60 mt-1 font-mono">{disk.freeGb} GB wolnych</span>
+                <span className="text-[10px] uppercase tracking-widest opacity-40 mt-1">{t('zenUsedSpace')}</span>
+                <span className="text-xs opacity-60 mt-1 font-mono">{t('zenFreeSpace', { gb: disk.freeGb.toString() })}</span>
               </div>
             </div>
 
             <div className="text-center space-y-2">
-              <h2 className="text-xl font-bold">SpaceGuard Zen - Prosta Optymalizacja</h2>
+              <h2 className="text-xl font-bold">{t('zenTitle')}</h2>
               <p className="text-xs text-neutral-400 max-w-md">
-                Wykryto łącznie <strong className="text-white">{disk.trashSizeMb + disk.cacheSizeMb} MB</strong> w pamięci podręcznej instalacji APT oraz koszu systemowym. Możesz natychmiast zwolnić to miejsce za pomocą jednego przycisku.
+                {t('zenSubtitle', { mb: (disk.trashSizeMb + disk.cacheSizeMb).toString() })}
               </p>
             </div>
 
@@ -341,13 +359,13 @@ export default function App() {
                 className="px-8 py-4 rounded-full font-bold text-sm bg-white text-neutral-950 hover:bg-neutral-200 cursor-pointer disabled:opacity-40 transition-all shadow-xl hover:scale-105 active:scale-95 flex items-center gap-2"
               >
                 <Zap className="w-4 h-4 fill-current" />
-                <span>Uruchom szybkie czyszczenie</span>
+                <span>{t('zenRunClean')}</span>
               </button>
               <button
                 onClick={() => { setVariant('Forge'); setActiveTab('dashboard'); }}
                 className="px-5 py-4 rounded-full text-xs font-semibold bg-neutral-800 text-neutral-300 hover:bg-neutral-750 cursor-pointer transition-all"
               >
-                Pokaż zaawansowane opcje
+                {t('zenShowAdvanced')}
               </button>
             </div>
           </div>
@@ -362,7 +380,7 @@ export default function App() {
                 <div className="flex justify-between items-start mb-2">
                   <div className="flex items-center space-x-1.5 opacity-60">
                     <HardDrive className="w-4 h-4" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">{t('diskUsage')} (/)</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider">{t('diskStorage')} (/)</span>
                   </div>
                   <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${
                     usagePercent >= 95 ? 'bg-red-500/20 text-red-500 border border-red-500/30' :
@@ -471,28 +489,20 @@ export default function App() {
               <div id="daemon-active-monitor" className={`p-4 rounded-lg border ${style.card}`}>
                 <div className="flex items-center space-x-1.5 opacity-60 mb-2">
                   <Activity className="w-4 h-4" />
-                  <span className="text-[10px] font-bold uppercase tracking-wider">Daemon SpaceGuard</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider">{t('daemonTitle')}</span>
                 </div>
                 <div className="space-y-2 text-xs">
                   <div className="flex justify-between">
-                    <span className="opacity-50">Resident Memory:</span>
+                    <span className="opacity-50">{t('residentMemory')}</span>
                     <span className="font-mono font-bold">~38.2 MB</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="opacity-50">Limit kontenera:</span>
+                    <span className="opacity-50">{t('containerLimit')}</span>
                     <span className="font-mono text-zinc-400">80 MB Max</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="opacity-50">Zarejestrowane pakiety:</span>
+                    <span className="opacity-50">{t('registeredPackages')}</span>
                     <span className="font-mono">{packages.length}</span>
-                  </div>
-                  <div className="pt-1.5 border-t border-white/5 flex gap-1">
-                    <button
-                      onClick={handleReset}
-                      className="text-[9px] font-bold uppercase text-center w-full py-1 rounded bg-white/5 border border-white/5 hover:bg-white/10 text-zinc-300"
-                    >
-                      Resetuj symulację
-                    </button>
                   </div>
                 </div>
               </div>
@@ -523,22 +533,6 @@ export default function App() {
                 }`}
               >
                 {t('tabGraph')}
-              </button>
-              <button
-                onClick={() => setActiveTab('logo')}
-                className={`px-4 py-2.5 border-b-2 -mb-[2px] cursor-pointer transition-all ${
-                  activeTab === 'logo' ? style.activeTab + ' border-current' : style.inactiveTab + ' border-transparent'
-                }`}
-              >
-                {t('tabLogo')}
-              </button>
-              <button
-                onClick={() => setActiveTab('packaging')}
-                className={`px-4 py-2.5 border-b-2 -mb-[2px] cursor-pointer transition-all ${
-                  activeTab === 'packaging' ? style.activeTab + ' border-current' : style.inactiveTab + ' border-transparent'
-                }`}
-              >
-                {t('tabPackaging')}
               </button>
               <button
                 onClick={() => setActiveTab('containers')}
@@ -601,14 +595,6 @@ export default function App() {
                 />
               )}
 
-              {activeTab === 'logo' && (
-                <LogoGenerator variant={variant} />
-              )}
-
-              {activeTab === 'packaging' && (
-                <PackagingView variant={variant} />
-              )}
-
               {activeTab === 'containers' && (
                 <ContainerManager
                   variant={variant}
@@ -661,7 +647,7 @@ export default function App() {
         </div>
 
         <div className="flex items-center gap-6 text-[11px]">
-          <div>SPACEGUARD © 2026 DEBIAN OPTIMIZER</div>
+          <div>SPACEGUARD v.1.2.0 DISK OPTIMIZER</div>
           <div className="flex items-center gap-2">
             <div className={`w-2 h-2 rounded-full animate-pulse bg-current ${style.accentText} ${style.glowClass}`}></div>
             <span className="tracking-widest">ONLINE</span>

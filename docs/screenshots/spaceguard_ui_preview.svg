@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070a0e"/>
+      <stop offset="100%" stop-color="#0c1015"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f2a100"/>
+      <stop offset="50%" stop-color="#00f2ff"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+    <style>
+      .mono { font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace; }
+      .sans { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    </style>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="1200" height="675" fill="url(#bg)"/>
+
+  <!-- Top Navigation & Accent Line -->
+  <rect x="0" y="0" width="1200" height="3" fill="url(#accent)"/>
+
+  <!-- Header Panel -->
+  <rect x="20" y="20" width="1160" height="60" fill="#0f141c" stroke="#1a202c" stroke-width="1"/>
+  <text x="40" y="55" fill="#ffffff" font-weight="900" font-size="20" class="mono" letter-spacing="1">SPACEGUARD <tspan fill="#f2a100">v1.2.0</tspan></text>
+  <text x="250" y="54" fill="#64748b" font-size="12" class="mono">| DISK OPTIMIZER &amp; LIVE AUDIT DAEMON</text>
+
+  <!-- System Badge Indicators -->
+  <rect x="820" y="35" width="110" height="28" fill="#1e293b" rx="4"/>
+  <text x="835" y="53" fill="#38bdf8" font-size="11" font-weight="bold" class="mono">🐧 DEBIAN / KALI</text>
+
+  <rect x="940" y="35" width="100" height="28" fill="#1e293b" rx="4"/>
+  <text x="955" y="53" fill="#a855f7" font-size="11" font-weight="bold" class="mono">🍏 macOS ARM</text>
+
+  <rect x="1050" y="35" width="110" height="28" fill="#10b981" fill-opacity="0.2" stroke="#10b981" stroke-width="1" rx="4"/>
+  <text x="1065" y="53" fill="#34d399" font-size="11" font-weight="bold" class="mono">🌐 EN / PL ACTIVE</text>
+
+  <!-- Stat Cards Row -->
+  <!-- Card 1: Root Storage -->
+  <rect x="20" y="95" width="275" height="90" fill="#0f141c" stroke="#1a202c" stroke-width="1"/>
+  <text x="35" y="120" fill="#64748b" font-size="10" font-weight="bold" class="mono">DISK UTILIZATION (/)</text>
+  <text x="35" y="152" fill="#ffffff" font-size="22" font-weight="bold" class="mono">53.4 GB <tspan fill="#64748b" font-size="14">/ 60 GB</tspan></text>
+  <rect x="35" y="165" width="245" height="6" fill="#1e293b" rx="3"/>
+  <rect x="35" y="165" width="218" height="6" fill="#f2a100" rx="3"/>
+
+  <!-- Card 2: Trash Bin -->
+  <rect x="315" y="95" width="275" height="90" fill="#0f141c" stroke="#1a202c" stroke-width="1"/>
+  <text x="330" y="120" fill="#64748b" font-size="10" font-weight="bold" class="mono">TRASH BIN STORAGE</text>
+  <text x="330" y="152" fill="#ef4444" font-size="22" font-weight="bold" class="mono">1,240 MB</text>
+  <text x="330" y="172" fill="#94a3b8" font-size="10" class="mono">~.Trash &amp; system rubbish</text>
+
+  <!-- Card 3: Cache Size -->
+  <rect x="610" y="95" width="275" height="90" fill="#0f141c" stroke="#1a202c" stroke-width="1"/>
+  <text x="625" y="120" fill="#64748b" font-size="10" font-weight="bold" class="mono">PACKAGE CACHE (APT/BREW)</text>
+  <text x="625" y="152" fill="#3b82f6" font-size="22" font-weight="bold" class="mono">2,450 MB</text>
+  <text x="625" y="172" fill="#94a3b8" font-size="10" class="mono">Cleanable archive pool</text>
+
+  <!-- Card 4: Daemon Status -->
+  <rect x="905" y="95" width="275" height="90" fill="#0f141c" stroke="#1a202c" stroke-width="1"/>
+  <text x="920" y="120" fill="#64748b" font-size="10" font-weight="bold" class="mono">DAEMON MONITOR STATUS</text>
+  <text x="920" y="152" fill="#10b981" font-size="22" font-weight="bold" class="mono">ONLINE</text>
+  <text x="920" y="172" fill="#94a3b8" font-size="10" class="mono">Memory: 38.2 MB | CPU: 0.1%</text>
+
+  <!-- Navigation Tabs -->
+  <rect x="20" y="200" width="1160" height="40" fill="#090d12" stroke="#1a202c" stroke-width="1"/>
+  <rect x="25" y="205" width="180" height="30" fill="#f2a100" fill-opacity="0.15" stroke="#f2a100" stroke-width="1"/>
+  <text x="45" y="225" fill="#f2a100" font-size="11" font-weight="bold" class="mono">1. PACKAGE MANAGER</text>
+
+  <rect x="215" y="205" width="160" height="30" fill="#0f141c"/>
+  <text x="235" y="225" fill="#94a3b8" font-size="11" font-weight="bold" class="mono">2. CLI CONSOLE</text>
+
+  <rect x="385" y="205" width="180" height="30" fill="#0f141c"/>
+  <text x="405" y="225" fill="#94a3b8" font-size="11" font-weight="bold" class="mono">3. DEP GRAPH (D3)</text>
+
+  <rect x="575" y="205" width="180" height="30" fill="#0f141c"/>
+  <text x="595" y="225" fill="#94a3b8" font-size="11" font-weight="bold" class="mono">4. CONTAINERS</text>
+
+  <rect x="765" y="205" width="160" height="30" fill="#0f141c"/>
+  <text x="785" y="225" fill="#94a3b8" font-size="11" font-weight="bold" class="mono">5. DEEP SCAN</text>
+
+  <!-- Main View Area: Package Manager Table Mockup -->
+  <rect x="20" y="250" width="1160" height="405" fill="#0f141c" stroke="#1a202c" stroke-width="1"/>
+
+  <!-- Table Header -->
+  <rect x="21" y="251" width="1158" height="35" fill="#161e2b"/>
+  <text x="40" y="273" fill="#64748b" font-size="11" font-weight="bold" class="mono">PACKAGE NAME</text>
+  <text x="300" y="273" fill="#64748b" font-size="11" font-weight="bold" class="mono">METHOD</text>
+  <text x="450" y="273" fill="#64748b" font-size="11" font-weight="bold" class="mono">DECLARED SIZE</text>
+  <text x="630" y="273" fill="#64748b" font-size="11" font-weight="bold" class="mono">ACTUAL DISK USAGE</text>
+  <text x="820" y="273" fill="#64748b" font-size="11" font-weight="bold" class="mono">STATUS</text>
+  <text x="960" y="273" fill="#64748b" font-size="11" font-weight="bold" class="mono">DEPENDENCIES</text>
+  <text x="1100" y="273" fill="#64748b" font-size="11" font-weight="bold" class="mono">ACTIONS</text>
+
+  <!-- Row 1: Wireshark -->
+  <rect x="21" y="287" width="1158" height="45" fill="#0f141c"/>
+  <text x="40" y="314" fill="#ffffff" font-size="12" font-weight="bold" class="mono">wireshark-qt</text>
+  <text x="300" y="314" fill="#a855f7" font-size="11" class="mono">apt-get</text>
+  <text x="450" y="314" fill="#94a3b8" font-size="11" class="mono">42.1 MB</text>
+  <text x="630" y="314" fill="#f2a100" font-size="12" font-weight="bold" class="mono">118.4 MB</text>
+  <rect x="820" y="300" width="80" height="20" fill="#10b981" fill-opacity="0.15" rx="3"/>
+  <text x="832" y="314" fill="#34d399" font-size="10" font-weight="bold" class="mono">installed</text>
+  <text x="980" y="314" fill="#38bdf8" font-size="11" class="mono">(14) graph</text>
+  <rect x="1090" y="298" width="70" height="24" fill="#ef4444" fill-opacity="0.2" stroke="#ef4444" stroke-width="1" rx="3"/>
+  <text x="1105" y="314" fill="#f87171" font-size="10" font-weight="bold" class="mono">PURGE</text>
+
+  <!-- Row 2: Credential Harvester (Custom Wget Download) -->
+  <rect x="21" y="333" width="1158" height="45" fill="#161b24"/>
+  <text x="40" y="360" fill="#ffffff" font-size="12" font-weight="bold" class="mono">credential-harvester</text>
+  <rect x="200" y="347" width="85" height="18" fill="#f59e0b" fill-opacity="0.2" rx="2"/>
+  <text x="205" y="360" fill="#fbbf24" font-size="9" font-weight="bold" class="mono">WGET / ZIP</text>
+  <text x="300" y="360" fill="#f59e0b" font-size="11" class="mono">wget</text>
+  <text x="450" y="360" fill="#94a3b8" font-size="11" class="mono">45.0 MB</text>
+  <text x="630" y="360" fill="#ef4444" font-size="12" font-weight="bold" class="mono">92.5 MB</text>
+  <rect x="820" y="346" width="80" height="20" fill="#10b981" fill-opacity="0.15" rx="3"/>
+  <text x="832" y="360" fill="#34d399" font-size="10" font-weight="bold" class="mono">installed</text>
+  <text x="980" y="360" fill="#38bdf8" font-size="11" class="mono">(4) graph</text>
+  <rect x="1090" y="344" width="70" height="24" fill="#ef4444" fill-opacity="0.2" stroke="#ef4444" stroke-width="1" rx="3"/>
+  <text x="1105" y="360" fill="#f87171" font-size="10" font-weight="bold" class="mono">PURGE</text>
+
+  <!-- Expanded Telemetry Panel Mockup -->
+  <rect x="35" y="388" width="1130" height="250" fill="#090d12" stroke="#334155" stroke-width="1"/>
+  <text x="50" y="412" fill="#64748b" font-size="11" font-weight="bold" class="mono">PROVENANCE AUDIT (TELEMETRY TRACKING)</text>
+  <text x="650" y="412" fill="#64748b" font-size="11" font-weight="bold" class="mono">REGISTER OF CREATED DISK PATHS (4 PATHS)</text>
+
+  <!-- Left Provenance Items -->
+  <text x="50" y="440" fill="#94a3b8" font-size="11" class="mono">Installing User: <tspan fill="#ffffff" font-weight="bold">kali</tspan> [SUDO]</text>
+  <text x="50" y="465" fill="#94a3b8" font-size="11" class="mono">Installed At: <tspan fill="#ffffff">2026-07-22 14:22:10</tspan></text>
+  <text x="50" y="490" fill="#94a3b8" font-size="11" class="mono">Deployment Method: <tspan fill="#10b981" font-weight="bold">WGET (ZIP-EXTRACT)</tspan></text>
+  <text x="50" y="515" fill="#94a3b8" font-size="11" class="mono">Source URL: <tspan fill="#60a5fa">https://github.com/phishing/gophish/master.zip</tspan></text>
+  <text x="50" y="540" fill="#94a3b8" font-size="11" class="mono">Collaborators: <tspan fill="#e2e8f0">python3, libc6, libssl3, nmap</tspan></text>
+
+  <!-- Right File Path Box -->
+  <rect x="650" y="425" width="500" height="190" fill="#030712" stroke="#1e293b" stroke-width="1" rx="4"/>
+  <text x="665" y="450" fill="#34d399" font-size="11" class="mono">📄 /opt/tool/executable</text>
+  <text x="665" y="475" fill="#34d399" font-size="11" class="mono">📄 /opt/tool/config.json</text>
+  <text x="665" y="500" fill="#34d399" font-size="11" class="mono">📄 /opt/tool/db.sqlite</text>
+  <text x="665" y="525" fill="#34d399" font-size="11" class="mono">📄 /var/log/tool_audit.log</text>
+  <text x="665" y="570" fill="#64748b" font-size="10" class="mono">SpaceGuard Disk Footprint Register - 100% tracked.</text>
+
+</svg>

@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070a0e"/>
+      <stop offset="100%" stop-color="#0c1015"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f2a100"/>
+      <stop offset="50%" stop-color="#00f2ff"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .mono { font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace; }
+    </style>
+  </defs>
+
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <rect x="0" y="0" width="1280" height="3" fill="url(#accent)"/>
+
+  <!-- Top App Bar -->
+  <rect x="20" y="15" width="1240" height="55" fill="#0f141c" stroke="#1e2633" stroke-width="1" rx="4"/>
+  <g transform="translate(35, 27)">
+    <polygon points="12,0 24,6 24,18 12,24 0,18 0,6" fill="#00f2ff" fill-opacity="0.2" stroke="#00f2ff" stroke-width="2"/>
+    <circle cx="12" cy="12" r="4" fill="#f2a100"/>
+    <text x="34" y="17" fill="#ffffff" font-weight="900" font-size="18" class="mono" letter-spacing="1">SPACEGUARD <tspan fill="#00f2ff">v1.2.0</tspan></text>
+  </g>
+  <text x="320" y="47" fill="#94a3b8" font-size="11" class="mono">MODULE: <tspan fill="#38bdf8" font-weight="bold">INTERACTIVE DISK SPACE TREEMAP</tspan></text>
+
+  <!-- Navigation Tabs Row -->
+  <g transform="translate(20, 80)">
+    <rect width="1240" height="42" fill="#0b0f14" stroke="#1e2633" stroke-width="1" rx="4"/>
+    <rect x="6" y="5" width="170" height="32" fill="#0f141c" rx="3"/>
+    <text x="22" y="25" fill="#94a3b8" font-size="11" font-weight="bold" class="mono">📦 Package Manager</text>
+
+    <rect x="182" y="5" width="180" height="32" fill="#00f2ff" fill-opacity="0.18" stroke="#00f2ff" stroke-width="1" rx="3"/>
+    <text x="198" y="25" fill="#00f2ff" font-size="11" font-weight="bold" class="mono">🗺️ Disk Space Map</text>
+
+    <rect x="368" y="5" width="160" height="32" fill="#0f141c" rx="3"/>
+    <text x="384" y="25" fill="#94a3b8" font-size="11" font-weight="bold" class="mono">💻 CLI Console</text>
+
+    <rect x="534" y="5" width="180" height="32" fill="#0f141c" rx="3"/>
+    <text x="550" y="25" fill="#94a3b8" font-size="11" font-weight="bold" class="mono">🕸️ Dependency Graph</text>
+
+    <rect x="720" y="5" width="170" height="32" fill="#0f141c" rx="3"/>
+    <text x="736" y="25" fill="#94a3b8" font-size="11" font-weight="bold" class="mono">🐳 Containers</text>
+  </g>
+
+  <!-- Main Treemap Panel -->
+  <g transform="translate(20, 132)">
+    <rect width="1240" height="570" fill="#0f141c" stroke="#1e2633" stroke-width="1" rx="4"/>
+
+    <!-- Breadcrumb Bar -->
+    <g transform="translate(15, 12)">
+      <rect width="1210" height="35" fill="#070a0e" stroke="#1e2633" stroke-width="1" rx="3"/>
+      <text x="15" y="22" fill="#64748b" font-size="11" class="mono">LOCATION: <tspan fill="#38bdf8" font-weight="bold">/ (Root File System)</tspan> &gt; <tspan fill="#00f2ff">var</tspan> &gt; <tspan fill="#f2a100">cache</tspan></text>
+      
+      <rect x="1050" y="4" width="145" height="27" fill="#16202c" stroke="#334155" stroke-width="1" rx="3"/>
+      <text x="1062" y="21" fill="#cbd5e1" font-size="10" font-weight="bold" class="mono">↺ Refresh Treemap</text>
+    </g>
+
+    <!-- Treemap Canvas Area -->
+    <g transform="translate(15, 55)">
+      <!-- Block 1: /var/lib/docker (Largest, 18.5 GB - Red Accent) -->
+      <rect width="520" height="320" fill="#ef4444" fill-opacity="0.12" stroke="#ef4444" stroke-width="2" rx="3"/>
+      <text x="15" y="25" fill="#f87171" font-size="14" font-weight="bold" class="mono">/var/lib/docker</text>
+      <text x="15" y="45" fill="#fca5a5" font-size="12" class="mono">18.5 GB (34.6% of total)</text>
+      <text x="15" y="300" fill="#ef4444" font-size="10" class="mono">[Click to inspect container overlays]</text>
+
+      <!-- Sub-blocks inside docker -->
+      <rect x="15" y="60" width="240" height="220" fill="#ef4444" fill-opacity="0.1" stroke="#f87171" stroke-width="1" stroke-dasharray="2 2" rx="2"/>
+      <text x="25" y="80" fill="#ffffff" font-size="11" font-weight="bold" class="mono">overlay2/ (14.2 GB)</text>
+
+      <rect x="265" y="60" width="240" height="220" fill="#ef4444" fill-opacity="0.1" stroke="#f87171" stroke-width="1" stroke-dasharray="2 2" rx="2"/>
+      <text x="275" y="80" fill="#ffffff" font-size="11" font-weight="bold" class="mono">volumes/ (4.3 GB)</text>
+
+      <!-- Block 2: /usr/share (12.4 GB - Amber Accent) -->
+      <rect x="530" y="0" width="420" height="320" fill="#f2a100" fill-opacity="0.12" stroke="#f2a100" stroke-width="2" rx="3"/>
+      <text x="545" y="25" fill="#f2a100" font-size="14" font-weight="bold" class="mono">/usr/share</text>
+      <text x="545" y="45" fill="#fde047" font-size="12" class="mono">12.4 GB (23.2% of total)</text>
+
+      <!-- Sub-blocks inside usr/share -->
+      <rect x="545" y="60" width="190" height="240" fill="#f2a100" fill-opacity="0.1" stroke="#fde047" stroke-width="1" rx="2"/>
+      <text x="555" y="80" fill="#ffffff" font-size="11" font-weight="bold" class="mono">metasploit-framework/</text>
+      <text x="555" y="98" fill="#fde047" font-size="10" class="mono">1.84 GB</text>
+
+      <rect x="745" y="60" width="190" height="240" fill="#f2a100" fill-opacity="0.1" stroke="#fde047" stroke-width="1" rx="2"/>
+      <text x="755" y="80" fill="#ffffff" font-size="11" font-weight="bold" class="mono">kali-wordlists/</text>
+      <text x="755" y="98" fill="#fde047" font-size="10" class="mono">3.40 GB</text>
+
+      <!-- Block 3: /var/cache/apt (6.2 GB - Cyan Accent) -->
+      <rect x="960" y="0" width="250" height="500" fill="#00f2ff" fill-opacity="0.12" stroke="#00f2ff" stroke-width="2" rx="3"/>
+      <text x="975" y="25" fill="#00f2ff" font-size="14" font-weight="bold" class="mono">/var/cache/apt</text>
+      <text x="975" y="45" fill="#7dd3fc" font-size="12" class="mono">6.2 GB (11.6%)</text>
+      <rect x="975" y="70" width="220" height="40" fill="#00f2ff" fill-opacity="0.2" rx="3"/>
+      <text x="985" y="95" fill="#38bdf8" font-size="10" font-weight="bold" class="mono">⚡ Flush Cache (2.45 GB free)</text>
+
+      <!-- Block 4: /home/kali (10.1 GB - Emerald Accent) -->
+      <rect x="0" y="330" width="520" height="170" fill="#10b981" fill-opacity="0.12" stroke="#10b981" stroke-width="2" rx="3"/>
+      <text x="15" y="355" fill="#34d399" font-size="14" font-weight="bold" class="mono">/home/kali</text>
+      <text x="15" y="375" fill="#a7f3d0" font-size="12" class="mono">10.1 GB (18.9% of total)</text>
+
+      <!-- Block 5: /tmp & /var/log (6.2 GB - Purple Accent) -->
+      <rect x="530" y="330" width="420" height="170" fill="#a855f7" fill-opacity="0.12" stroke="#a855f7" stroke-width="2" rx="3"/>
+      <text x="545" y="355" fill="#c084fc" font-size="14" font-weight="bold" class="mono">/var/log &amp; /tmp</text>
+      <text x="545" y="375" fill="#e9d5ff" font-size="12" class="mono">6.2 GB (11.6% of total)</text>
+    </g>
+  </g>
+</svg>

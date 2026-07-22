@@ -246,6 +246,46 @@ async function startServer() {
     }
   });
 
+  // API Route: Software Update Check & Apply
+  let appVersion = '1.2.0';
+  const latestRelease = {
+    version: '1.2.5',
+    releaseDate: '2026-07-22',
+    changelog: [
+      'Enhanced Docker & Podman layer disk space reclamation',
+      'Optimized D3 dependency graph rendering performance',
+      'Added MacOS and multi-OS storage analyzer compatibility hooks',
+      'Updated security audit rules & orphan package heuristics'
+    ]
+  };
+
+  app.get('/api/update/check', (req, res) => {
+    try {
+      const hasUpdate = appVersion !== latestRelease.version;
+      res.json({
+        currentVersion: appVersion,
+        latestVersion: latestRelease.version,
+        hasUpdate,
+        release: latestRelease
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post('/api/update/apply', (req, res) => {
+    try {
+      appVersion = latestRelease.version;
+      res.json({
+        success: true,
+        version: appVersion,
+        message: 'SpaceGuard updated successfully. All user settings, logs, and state preserved.'
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   // API Route: Simulate external background installation / download
   app.post('/api/simulate-external', (req, res) => {
     try {

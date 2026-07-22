@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import { PackageInfo, DiskStatus } from '../types';
 import { Package, Trash2, ArrowUpRight, HelpCircle, ShieldAlert, CheckCircle, RefreshCcw, Search, Filter, HelpCircleIcon } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface PackageListProps {
   packages: PackageInfo[];
@@ -24,6 +25,7 @@ export default function PackageList({
   variant,
   fetchData
 }: PackageListProps) {
+  const { t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
   const [sectionFilter, setSectionFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -79,13 +81,13 @@ export default function PackageList({
       });
       const data = await res.json();
       if (res.ok) {
-        onActionComplete(`Pakiet '${name}' został pomyślnie zainstalowany w systemie.`);
+        onActionComplete(t('msgInstalledSuccess', { name }));
         fetchData();
       } else {
-        onActionComplete(`Błąd instalacji: ${data.error}`);
+        onActionComplete(t('msgInstallError', { error: data.error }));
       }
     } catch (err) {
-      onActionComplete(`Błąd sieci podczas próby instalacji '${name}'.`);
+      onActionComplete(t('msgInstallConnError', { name }));
     } finally {
       setLoading(null);
     }
@@ -101,14 +103,14 @@ export default function PackageList({
       });
       const data = await res.json();
       if (res.ok) {
-        onActionComplete(`Pakiet '${name}' został pomyślnie usunięty. Zwolniono ${data.freedMb} MB.`);
+        onActionComplete(t('msgRemovedSuccess', { name, mb: data.freedMb }));
         fetchData();
         setRecommendationPackage(null);
       } else {
-        onActionComplete(`Błąd usuwania: ${data.error}`);
+        onActionComplete(t('msgRemoveError', { error: data.error }));
       }
     } catch (err) {
-      onActionComplete(`Błąd sieci podczas próby usunięcia '${name}'.`);
+      onActionComplete(t('msgRemoveConnError', { name }));
     } finally {
       setLoading(null);
     }
@@ -117,7 +119,7 @@ export default function PackageList({
   const handleSimulateDownload = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newDlName.trim() || !newDlSize.trim()) {
-      onActionComplete('Błąd: Podaj nazwę i rozmiar elementu.');
+      onActionComplete(t('msgErrNameSizeRequired'));
       return;
     }
     setSimDlLoading(true);
@@ -141,16 +143,16 @@ export default function PackageList({
       });
       const data = await res.json();
       if (res.ok) {
-        onActionComplete(`[SpaceGuard Intercept] Pomyślnie zasymulowano pobranie i utworzono ślad telemetryczny dla '${newDlName}'.`);
+        onActionComplete(t('msgSimulateSuccess', { name: newDlName }));
         fetchData();
         setNewDlName('');
         setNewDlUrl('');
         setActiveTab('custom');
       } else {
-        onActionComplete(`Błąd symulacji: ${data.error}`);
+        onActionComplete(t('msgSimulateError', { error: data.error }));
       }
     } catch (err) {
-      onActionComplete(`Błąd sieci podczas próby symulacji pobierania.`);
+      onActionComplete(t('msgSimulateConnError'));
     } finally {
       setSimDlLoading(false);
     }
@@ -230,15 +232,15 @@ export default function PackageList({
         <div>
           <h3 className={`text-sm font-semibold uppercase tracking-wider flex items-center gap-2 ${style.headerText}`}>
             <Package className="w-4 h-4" />
-            Baza pakietów dpkg-status i sugestie zwolnienia miejsca
+            {t('pkgDbTitle')}
           </h3>
-          <p className="text-xs opacity-50">Porównuj Installed-Size (rozmiar deklarowany) z du (rozmiar faktyczny na dysku). Zmień karty poniżej, aby badać telemetrycznie pobrane pliki i skrypty.</p>
+          <p className="text-xs opacity-50">{t('pkgDbSubtitle')}</p>
         </div>
         <button
           onClick={fetchData}
           className="flex items-center gap-1 text-[11px] font-semibold text-zinc-400 hover:text-white transition-colors cursor-pointer border border-white/5 px-2 py-1 rounded"
         >
-          <RefreshCcw className="w-3 h-3" /> Odśwież baze
+          <RefreshCcw className="w-3 h-3" /> {t('refreshDb')}
         </button>
       </div>
 
@@ -252,7 +254,7 @@ export default function PackageList({
               : 'border-transparent text-zinc-500 hover:text-zinc-300'
           }`}
         >
-          WSZYSTKIE ({packages.length})
+          {t('tabAll')} ({packages.length})
         </button>
         <button
           onClick={() => { setActiveTab('apt'); setExpandedPackage(null); }}
@@ -262,7 +264,7 @@ export default function PackageList({
               : 'border-transparent text-zinc-500 hover:text-zinc-300'
           }`}
         >
-          PAKIETY SYSTEMOWE APT ({packages.filter(p => !p.isCustomFootprint).length})
+          {t('tabAptSystem')} ({packages.filter(p => !p.isCustomFootprint).length})
         </button>
         <button
           onClick={() => { setActiveTab('custom'); setExpandedPackage(null); }}
@@ -272,7 +274,7 @@ export default function PackageList({
               : 'border-transparent text-zinc-500 hover:text-zinc-300'
           }`}
         >
-          POBRANE PLIKI, SKRYPTY & ZIPY ({packages.filter(p => p.isCustomFootprint).length})
+          {t('tabCustomFiles')} ({packages.filter(p => p.isCustomFootprint).length})
         </button>
         <button
           onClick={() => { setActiveTab('simulator'); setExpandedPackage(null); }}
@@ -283,7 +285,7 @@ export default function PackageList({
           }`}
         >
           <ArrowUpRight className="w-3 h-3 text-emerald-400" />
-          SYMULATOR POBRANIA WGET/CURL
+          {t('tabSimulator')}
         </button>
       </div>
 
@@ -297,7 +299,7 @@ export default function PackageList({
               <input
                 id="package-search-box"
                 type="text"
-                placeholder="Szukaj pakietów po nazwie lub opisie..."
+                placeholder={t('searchPlaceholder')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className={`w-full text-xs pl-9 pr-3 py-2 rounded focus:outline-none border ${style.inputBg}`}
@@ -314,7 +316,7 @@ export default function PackageList({
                 className={`w-full text-xs px-2.5 py-1.75 rounded border cursor-pointer focus:outline-none ${style.inputBg}`}
               >
                 {sections.map(sec => (
-                  <option key={sec} value={sec}>Sekcja: {sec === 'all' ? 'Wszystkie' : sec}</option>
+                  <option key={sec} value={sec}>{sec === 'all' ? t('sectionFilterAll') : `${t('sectionFilterPrefix')} ${sec}`}</option>
                 ))}
               </select>
             </div>
@@ -328,15 +330,15 @@ export default function PackageList({
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className={`w-full text-xs px-2.5 py-1.75 rounded border cursor-pointer focus:outline-none ${style.inputBg}`}
               >
-                <option value="all">Status: Wszystkie</option>
-                <option value="installed">Status: Zainstalowane</option>
-                <option value="available">Status: Dostępne</option>
+                <option value="all">{t('statusFilterAll')}</option>
+                <option value="installed">{t('statusFilterInstalled')}</option>
+                <option value="available">{t('statusFilterAvailable')}</option>
               </select>
             </div>
           </div>
 
           <p className="text-[10px] text-zinc-400 mb-2 font-mono italic">
-            💡 Kliknij na dowolny wiersz tabeli, aby otworzyć **rejestr telemetryczny** i sprawdzić kto pobrał plik, kiedy dokładnie, skąd i jakie pliki na dysku utworzył.
+            {t('telemetryNotice')}
           </p>
 
           {/* Packages Table List */}
@@ -344,19 +346,19 @@ export default function PackageList({
             <table id="packages-data-table" className="w-full text-xs text-left border-collapse">
               <thead>
                 <tr className="bg-[#0c1015] border-b border-[#1a1f26] text-[#4d5b6e] font-mono tracking-wider uppercase text-[10px]">
-                  <th className="p-3 font-semibold">Nazwa pakietu</th>
-                  <th className="p-3 font-semibold hidden md:table-cell">Metoda</th>
-                  <th className="p-3 font-semibold">Zadeklarowany</th>
-                  <th className="p-3 font-semibold">Faktyczny (du)</th>
-                  <th className="p-3 font-semibold text-center">Status</th>
-                  <th className="p-3 font-semibold text-center">Zależności</th>
-                  <th className="p-3 font-semibold text-right">Akcje</th>
+                  <th className="p-3 font-semibold">{t('thPkgName')}</th>
+                  <th className="p-3 font-semibold hidden md:table-cell">{t('thMethod')}</th>
+                  <th className="p-3 font-semibold">{t('thDeclared')}</th>
+                  <th className="p-3 font-semibold">{t('thActual')}</th>
+                  <th className="p-3 font-semibold text-center">{t('thStatus')}</th>
+                  <th className="p-3 font-semibold text-center">{t('thDependencies')}</th>
+                  <th className="p-3 font-semibold text-right">{t('thActions')}</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredPackages.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="p-8 text-center text-zinc-500 italic">Brak wyników spełniających kryteria wyszukiwania.</td>
+                    <td colSpan={7} className="p-8 text-center text-zinc-500 italic">{t('noPkgResults')}</td>
                   </tr>
                 ) : (
                   filteredPackages.map(pkg => {
@@ -377,17 +379,17 @@ export default function PackageList({
                               <span>{pkg.name}</span>
                               {pkg.isSystem && (
                                 <span className="px-1.5 py-0.25 text-[8px] rounded border border-yellow-500/30 bg-yellow-950/10 text-yellow-500" title="System Critical Package">
-                                  systemowy
+                                  {t('badgeSystemCore')}
                                 </span>
                               )}
                               {pkg.isCustomFootprint && (
                                 <span className="px-1.5 py-0.25 text-[8px] rounded border border-blue-500/30 bg-blue-950/10 text-blue-400" title="Manual file download/script footprint">
-                                  zasób zewnętrzny
+                                  {t('badgeExternalResource')}
                                 </span>
                               )}
                               {hasWhy && pkg.status === 'installed' && (
                                 <span className="px-1.5 py-0.25 text-[8px] rounded border border-rose-500/30 bg-rose-950/10 text-rose-400 animate-pulse">
-                                  rekomendowany
+                                  {t('badgeRecommended')}
                                 </span>
                               )}
                             </div>
@@ -402,17 +404,17 @@ export default function PackageList({
                             <span className={`px-2 py-0.5 rounded-full border text-[9px] font-semibold ${
                               pkg.status === 'installed' ? style.badgeInstalled : style.badgeAvailable
                             }`}>
-                              {pkg.status === 'installed' ? 'zainstalowany' : 'dostępny'}
+                              {pkg.status === 'installed' ? t('statusInstalled') : t('statusAvailable')}
                             </span>
                           </td>
                           <td className="p-3 text-center" onClick={(e) => e.stopPropagation()}>
                             <button
                               onClick={() => onSelectPackageGraph(pkg.name)}
                               className="text-[10px] text-zinc-400 hover:text-white underline cursor-pointer inline-flex items-center gap-1"
-                              title="Zbadaj połączenia w grafie"
+                              title={t('titleInspectGraph')}
                             >
                               <ArrowUpRight className="w-3 h-3" />
-                              <span>({pkg.dependencies.length}) graf</span>
+                              <span>({pkg.dependencies.length}) {t('lblGraph')}</span>
                             </button>
                           </td>
                           <td className="p-3 text-right" onClick={(e) => e.stopPropagation()}>
@@ -421,7 +423,7 @@ export default function PackageList({
                                 {hasWhy && (
                                   <button
                                     onClick={() => openRecommendationModal(pkg)}
-                                    title="Pokaż dlaczego/jak usunąć"
+                                    title={t('titleWhyRemove')}
                                     className="p-1.5 rounded bg-amber-500/10 border border-amber-500/20 text-amber-500 hover:bg-amber-500/25 cursor-pointer"
                                   >
                                     <HelpCircle className="w-3.5 h-3.5" />
@@ -430,7 +432,7 @@ export default function PackageList({
                                 <button
                                   onClick={() => {
                                     if (pkg.isSystem) {
-                                      onActionComplete(`Blokada: ${pkg.name} to pakiet jądra/systemu i nie może zostać usunięty.`);
+                                      onActionComplete(t('msgKernelBlock', { name: pkg.name }));
                                     } else {
                                       openRecommendationModal(pkg);
                                     }
@@ -449,7 +451,7 @@ export default function PackageList({
                                 disabled={loading === pkg.name}
                                 className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase transition-all cursor-pointer ${style.btnPrimary}`}
                               >
-                                {loading === pkg.name ? 'instaluje...' : 'zainstaluj'}
+                                {loading === pkg.name ? t('btnInstalling') : t('btnInstall')}
                               </button>
                             )}
                           </td>
@@ -463,10 +465,10 @@ export default function PackageList({
                                 {/* Left: Audit Details */}
                                 <div className="space-y-2 border-r border-[#1a1f26]/60 pr-4">
                                   <div className="font-bold text-[#4d5b6e] uppercase tracking-wider text-[10px] pb-1 border-b border-white/5">
-                                    Śledzenie pochodzenia (Provenance Audit)
+                                    {t('pkgProvenanceAudit')}
                                   </div>
                                   <div className="flex justify-between pb-1.5 border-b border-white/5">
-                                    <span className="opacity-40">Użytkownik instalujący:</span>
+                                    <span className="opacity-40">{t('pkgInstallingUser')}</span>
                                     <span className="font-bold text-white flex items-center gap-1.5">
                                       {pkg.installedBy || 'root'}
                                       {(pkg.hasSudo || pkg.installedBy === 'root') && (
@@ -475,31 +477,31 @@ export default function PackageList({
                                     </span>
                                   </div>
                                   <div className="flex justify-between pb-1.5 border-b border-white/5">
-                                    <span className="opacity-40">Zainstalowano:</span>
+                                    <span className="opacity-40">{t('pkgInstalledAtLabel')}</span>
                                     <span className="text-zinc-300">
-                                      {pkg.installedAt ? new Date(pkg.installedAt).toLocaleString() : 'Preinstalowany fabrycznie'}
+                                      {pkg.installedAt ? new Date(pkg.installedAt).toLocaleString() : t('pkgPreinstalled')}
                                     </span>
                                   </div>
                                   <div className="flex justify-between pb-1.5 border-b border-white/5">
-                                    <span className="opacity-40">Ostatnio używany:</span>
+                                    <span className="opacity-40">{t('pkgLastUsedLabel')}</span>
                                     <span className="text-zinc-300">
-                                      {pkg.lastUsedAt ? new Date(pkg.lastUsedAt).toLocaleString() : 'Preinstalowany fabrycznie'}
+                                      {pkg.lastUsedAt ? new Date(pkg.lastUsedAt).toLocaleString() : t('pkgPreinstalled')}
                                     </span>
                                   </div>
                                   <div className="flex justify-between pb-1.5 border-b border-white/5">
-                                    <span className="opacity-40">Środek wdrożenia:</span>
+                                    <span className="opacity-40">{t('pkgDeploymentMethodLabel')}</span>
                                     <span className="text-zinc-300 uppercase font-bold text-[10px] text-emerald-400">
                                       {pkg.installMethod || 'apt-get'}
                                     </span>
                                   </div>
                                   <div className="pb-1">
-                                    <span className="opacity-40 block mb-1">Pełny adres URL źródła / polecenie:</span>
+                                    <span className="opacity-40 block mb-1">{t('pkgSourceUrlCmdLabel')}</span>
                                     <span className="text-blue-400 break-all text-[10px] block font-sans select-all bg-black/40 p-1.5 border border-white/5 rounded">
                                       {pkg.sourceUrl || `apt-get install ${pkg.name}`}
                                     </span>
                                   </div>
                                   <div>
-                                    <span className="opacity-40 block mb-1">Współpracujące programy (Runtime dynamic links):</span>
+                                    <span className="opacity-40 block mb-1">{t('pkgCollaboratingPkgsLabel')}</span>
                                     <div className="flex flex-wrap gap-1 mt-1 font-sans">
                                       {pkg.collaboratingWith && pkg.collaboratingWith.length > 0 ? (
                                         pkg.collaboratingWith.map(c => (
@@ -508,7 +510,7 @@ export default function PackageList({
                                           </span>
                                         ))
                                       ) : (
-                                        <span className="text-[10px] italic opacity-40">Brak czynnych powiązań runtime</span>
+                                        <span className="text-[10px] italic opacity-40">{t('pkgNoRuntimeCollabs')}</span>
                                       )}
                                     </div>
                                   </div>
@@ -517,9 +519,9 @@ export default function PackageList({
                                 {/* Right: Created Files */}
                                 <div className="space-y-2">
                                   <div className="font-bold text-[#4d5b6e] uppercase tracking-wider text-[10px] pb-1 border-b border-white/5 flex items-center justify-between">
-                                    <span>Rejestr utworzonych ścieżek na dysku</span>
+                                    <span>{t('pkgCreatedPathsRegister')}</span>
                                     <span className="text-[9px] bg-zinc-800 text-zinc-300 px-1.5 py-0.25">
-                                      {pkg.createdFiles?.length || 0} ścieżek
+                                      {t('pkgPathsCount', { count: pkg.createdFiles?.length || 0 })}
                                     </span>
                                   </div>
                                   <div className="max-h-40 overflow-y-auto font-mono text-[10px] text-zinc-400 bg-black/40 p-2.5 border border-white/5 space-y-1 rounded select-all">
@@ -530,11 +532,11 @@ export default function PackageList({
                                         </div>
                                       ))
                                     ) : (
-                                      <div className="text-zinc-600 italic">Brak śledzonych plików. Dane pakietu pobierane bezpośrednio z db dpkg.</div>
+                                      <div className="text-zinc-600 italic">{t('pkgNoTrackedFiles')}</div>
                                     )}
                                   </div>
                                   <p className="text-[10px] opacity-40 leading-relaxed font-sans">
-                                    Rejestr ubytku wolnej przestrzeni: SpaceGuard monitoruje powyższe lokalizacje i powiązał je z instalacją tego elementu. Usunięcie wykasuje ślady z dysku.
+                                    {t('pkgFootprintNotice')}
                                   </p>
                                 </div>
                               </div>
@@ -555,15 +557,15 @@ export default function PackageList({
           <div className="flex items-center gap-2 mb-4 pb-2 border-b border-white/5">
             <ArrowUpRight className="w-5 h-5 text-emerald-400" />
             <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider font-mono">Symulator Pobierania & Interceptacji Plików (SpaceGuard Intercept)</h4>
-              <p className="text-[10px] opacity-50">Zasymuluj ubytek miejsca na dysku z dowolnego skryptu curl, polecenia wget lub archiwum ZIP.</p>
+              <h4 className="text-xs font-bold uppercase tracking-wider font-mono">{t('simTitle')}</h4>
+              <p className="text-[10px] opacity-50">{t('simSubtitle')}</p>
             </div>
           </div>
 
           <form onSubmit={handleSimulateDownload} className="space-y-4 text-xs font-mono">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[#4d5b6e] uppercase tracking-wider text-[10px] mb-1 font-bold">Nazwa zasobu / pliku:</label>
+                <label className="block text-[#4d5b6e] uppercase tracking-wider text-[10px] mb-1 font-bold">{t('simNameLabel')}</label>
                 <input
                   type="text"
                   required
@@ -575,7 +577,7 @@ export default function PackageList({
               </div>
 
               <div>
-                <label className="block text-[#4d5b6e] uppercase tracking-wider text-[10px] mb-1 font-bold">Rozmiar zasobu (MB):</label>
+                <label className="block text-[#4d5b6e] uppercase tracking-wider text-[10px] mb-1 font-bold">{t('simSizeLabel')}</label>
                 <input
                   type="number"
                   required
@@ -588,7 +590,7 @@ export default function PackageList({
             </div>
 
             <div>
-              <label className="block text-[#4d5b6e] uppercase tracking-wider text-[10px] mb-1 font-bold">Adres URL źródła (skąd pobrano):</label>
+              <label className="block text-[#4d5b6e] uppercase tracking-wider text-[10px] mb-1 font-bold">{t('simUrlLabel')}</label>
               <input
                 type="text"
                 placeholder="np. https://github.com/phishing/gophish/master.zip"
@@ -600,7 +602,7 @@ export default function PackageList({
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label className="block text-[#4d5b6e] uppercase tracking-wider text-[10px] mb-1 font-bold">Narzędzie pobierające:</label>
+                <label className="block text-[#4d5b6e] uppercase tracking-wider text-[10px] mb-1 font-bold">{t('simMethodLabel')}</label>
                 <select
                   value={newDlMethod}
                   onChange={(e) => setNewDlMethod(e.target.value as any)}
@@ -614,7 +616,7 @@ export default function PackageList({
               </div>
 
               <div>
-                <label className="block text-[#4d5b6e] uppercase tracking-wider text-[10px] mb-1 font-bold">Użytkownik instalujący:</label>
+                <label className="block text-[#4d5b6e] uppercase tracking-wider text-[10px] mb-1 font-bold">{t('simUserLabel')}</label>
                 <select
                   value={newDlInstaller}
                   onChange={(e) => setNewDlInstaller(e.target.value)}
@@ -635,14 +637,14 @@ export default function PackageList({
                   className="mr-2 h-4 w-4 bg-[#0c1015] border-[#1a1f26] rounded-none cursor-pointer"
                 />
                 <label htmlFor="simulate-sudo-checkbox" className="text-zinc-300 font-bold uppercase tracking-wider text-[10px] cursor-pointer">
-                  Zastosuj SUDO
+                  {t('simApplySudo')}
                 </label>
               </div>
             </div>
 
             <div>
               <label className="block text-[#4d5b6e] uppercase tracking-wider text-[10px] mb-1 font-bold">
-                Kooperujące aplikacje / biblioteki (oddziel przecinkami):
+                {t('simCollaboratorsLabel')}
               </label>
               <input
                 type="text"
@@ -655,7 +657,7 @@ export default function PackageList({
 
             <div>
               <label className="block text-[#4d5b6e] uppercase tracking-wider text-[10px] mb-1 font-bold">
-                Utworzone ścieżki plików na dysku (jedna ścieżka na wiersz):
+                {t('simCreatedPathsLabel')}
               </label>
               <textarea
                 rows={3}
@@ -678,7 +680,7 @@ export default function PackageList({
                 }`}
               >
                 <ArrowUpRight className="w-4 h-4 animate-bounce" />
-                <span>{simDlLoading ? 'Uruchamianie symulacji...' : 'Zatwierdź i Zasymuluj Pobranie'}</span>
+                <span>{simDlLoading ? t('simRunning') : t('simSubmit')}</span>
               </button>
             </div>
           </form>
@@ -692,7 +694,7 @@ export default function PackageList({
             <div className="flex items-center gap-2 mb-4 pb-2 border-b border-white/5">
               <ShieldAlert className="w-5 h-5 text-rose-500 shrink-0" />
               <div>
-                <h4 className="text-sm font-bold uppercase tracking-wider font-mono">Raport Usuwania: {recommendationPackage.name}</h4>
+                <h4 className="text-sm font-bold uppercase tracking-wider font-mono">{t('modalReportTitle', { name: recommendationPackage.name })}</h4>
                 <p className="text-[10px] opacity-50">SpaceGuard System Optimization Intelligence Report</p>
               </div>
             </div>
@@ -700,37 +702,37 @@ export default function PackageList({
             <div className="space-y-4 text-xs font-mono">
               {/* Space to Save */}
               <div className="flex justify-between items-center bg-white/5 p-3 rounded border border-white/5">
-                <span className="font-semibold opacity-75">Odzyskane miejsce na dysku:</span>
+                <span className="font-semibold opacity-75">{t('modalReclaimedSpace')}</span>
                 <span className="text-sm font-bold font-mono">{(recommendationPackage.actualSizeKb / 1024).toFixed(1)} MB</span>
               </div>
 
               {/* Provenance details */}
               <div className="bg-[#0c1015] border border-white/5 p-2 text-[10px] space-y-1 text-zinc-400">
-                <div>• Zainstalowane przez: <span className="text-white font-bold">{recommendationPackage.installedBy || 'root'}</span> (Sudo: {recommendationPackage.hasSudo ? 'TAK' : 'NIE'})</div>
-                <div>• Data wdrożenia: <span className="text-white">{recommendationPackage.installedAt ? new Date(recommendationPackage.installedAt).toLocaleString() : 'brak'}</span></div>
-                <div>• Sposób instalacji: <span className="text-emerald-400 font-bold uppercase">{recommendationPackage.installMethod || 'apt'}</span></div>
-                <div>• Adres URL/źródło: <span className="text-blue-400 break-all">{recommendationPackage.sourceUrl || 'Standard Debian Mirror'}</span></div>
+                <div>{t('modalInstalledBy')} <span className="text-white font-bold">{recommendationPackage.installedBy || 'root'}</span> (Sudo: {recommendationPackage.hasSudo ? 'TAK' : 'NIE'})</div>
+                <div>{t('modalDeployedAt')} <span className="text-white">{recommendationPackage.installedAt ? new Date(recommendationPackage.installedAt).toLocaleString() : 'brak'}</span></div>
+                <div>{t('modalMethod')} <span className="text-emerald-400 font-bold uppercase">{recommendationPackage.installMethod || 'apt'}</span></div>
+                <div>{t('modalSource')} <span className="text-blue-400 break-all">{recommendationPackage.sourceUrl || 'Standard Debian Mirror'}</span></div>
               </div>
 
               {/* WHY */}
               <div>
-                <span className="font-bold uppercase tracking-wider text-[10px] block mb-1 opacity-50">1. Dlaczego (WHY):</span>
+                <span className="font-bold uppercase tracking-wider text-[10px] block mb-1 opacity-50">{t('modalWhyHeader')}</span>
                 <p className="leading-relaxed border-l-2 border-amber-500 pl-2 text-zinc-300">
-                  {recommendationPackage.whyRecommend || 'Pakiet oznaczony jako opcjonalny, z niską oceną krytyczności systemowej.'}
+                  {recommendationPackage.whyRecommend || t('modalWhyDefault')}
                 </p>
               </div>
 
               {/* IMPACT */}
               <div>
-                <span className="font-bold uppercase tracking-wider text-[10px] block mb-1 opacity-50">2. Konsekwencje Usunięcia (IMPACT):</span>
+                <span className="font-bold uppercase tracking-wider text-[10px] block mb-1 opacity-50">{t('modalImpactHeader')}</span>
                 <p className="leading-relaxed border-l-2 border-rose-500 pl-2 text-zinc-300">
-                  Usunięty zostanie plik binarny programu oraz powiązane z nim pliki na dysku (łącznie {recommendationPackage.createdFiles?.length || 0} ścieżek). Pliki konfiguracyjne w katalogach domowych użytkownika zostaną zachowane.
+                  {t('modalImpactDesc', { count: recommendationPackage.createdFiles?.length || 0 })}
                 </p>
               </div>
 
               {/* ROLLBACK */}
               <div>
-                <span className="font-bold uppercase tracking-wider text-[10px] block mb-1 opacity-50">3. Przywrócenie Systemu (ROLLBACK):</span>
+                <span className="font-bold uppercase tracking-wider text-[10px] block mb-1 opacity-50">{t('modalRollbackHeader')}</span>
                 <p className="leading-relaxed border-l-2 border-emerald-500 pl-2 font-mono bg-black/30 p-2 rounded text-emerald-400">
                   {recommendationPackage.isCustomFootprint 
                     ? `${recommendationPackage.installMethod === 'wget' ? 'wget' : 'curl'} ${recommendationPackage.sourceUrl}`
@@ -741,7 +743,7 @@ export default function PackageList({
 
               {/* RISK */}
               <div className="flex justify-between text-[11px] font-mono border-t border-white/5 pt-3">
-                <span>Ryzyko destabilizacji:</span>
+                <span>{t('modalRiskHeader')}</span>
                 <span className={`font-bold uppercase ${
                   recommendationPackage.rollbackRisk === 'high' ? 'text-red-500' :
                   recommendationPackage.rollbackRisk === 'medium' ? 'text-yellow-500' : 'text-green-500'
@@ -757,7 +759,7 @@ export default function PackageList({
                   variant === 'Atlas' ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' : 'bg-zinc-900 text-zinc-400 hover:bg-zinc-850'
                 }`}
               >
-                Anuluj
+                {t('btnCancel')}
               </button>
               <button
                 onClick={() => handleRemove(recommendationPackage.name)}
@@ -765,7 +767,7 @@ export default function PackageList({
                 className="px-4 py-2 rounded text-xs font-bold bg-red-600 hover:bg-red-700 text-white cursor-pointer transition-all flex items-center gap-1.5 shadow-md"
               >
                 <Trash2 className="w-3.5 h-3.5" />
-                <span>{loading === recommendationPackage.name ? 'Usuwanie...' : 'Zatwierdź Usuwanie (Clean)'}</span>
+                <span>{loading === recommendationPackage.name ? t('btnDeleting') : t('btnConfirmClean')}</span>
               </button>
             </div>
           </div>

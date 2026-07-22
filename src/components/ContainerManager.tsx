@@ -6,6 +6,7 @@
 import React, { useEffect, useState } from 'react';
 import { HardDrive, Trash2, Layers, RefreshCw, Database, Activity, HelpCircle, Box } from 'lucide-react';
 import { DiskStatus, DockerImage, DockerContainer, UIViewVariant } from '../types';
+import { useLanguage } from '../context/LanguageContext';
 
 interface ContainerManagerProps {
   variant: UIViewVariant;
@@ -15,6 +16,7 @@ interface ContainerManagerProps {
 }
 
 export default function ContainerManager({ variant, onActionComplete, disk, fetchData }: ContainerManagerProps) {
+  const { t } = useLanguage();
   const [dockerImages, setDockerImages] = useState<DockerImage[]>([]);
   const [dockerContainers, setDockerContainers] = useState<DockerContainer[]>([]);
   const [podmanImages, setPodmanImages] = useState<DockerImage[]>([]);
@@ -51,15 +53,15 @@ export default function ContainerManager({ variant, onActionComplete, disk, fetc
         body: JSON.stringify({ engine, type, id })
       });
       if (res.ok) {
-        onActionComplete(`Usunięto ${type === 'image' ? 'obraz' : 'kontener'} ${name} z silnika ${engine}.`);
+        onActionComplete(t('msgRemovedResource', { type: type === 'image' ? t('contImage') : t('contContainer'), name, engine }));
         fetchResources();
         fetchData();
       } else {
         const errData = await res.json();
-        onActionComplete(`Błąd: ${errData.error || 'Nie można usunąć zasobu.'}`);
+        onActionComplete(t('msgRemoveError', { error: errData.error || t('msgCannotRemove') }));
       }
     } catch (err) {
-      onActionComplete('Błąd połączenia z serwerem przy usuwaniu zasobu.');
+      onActionComplete(t('msgRemoveConnError'));
     }
   };
 
@@ -73,15 +75,15 @@ export default function ContainerManager({ variant, onActionComplete, disk, fetc
       if (res.ok) {
         const data = await res.json();
         if (data.freedMb > 0) {
-          onActionComplete(`Pomyślnie oczyszczono ${engine}. Zwolniono ${data.freedMb} MB pamięci dyskowej.`);
+          onActionComplete(t('msgPruneSuccess', { engine, mb: data.freedMb }));
         } else {
-          onActionComplete(`Silnik ${engine} jest już czysty. Brak zbędnych zasobów do usunięcia.`);
+          onActionComplete(t('msgPruneAlreadyClean', { engine }));
         }
         fetchResources();
         fetchData();
       }
     } catch (err) {
-      onActionComplete('Błąd połączenia z serwerem podczas czyszczenia kontenerów.');
+      onActionComplete(t('msgPruneConnError'));
     }
   };
 
@@ -161,12 +163,12 @@ export default function ContainerManager({ variant, onActionComplete, disk, fetc
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-sm font-bold uppercase tracking-wider text-white">
-                  Silnik {engine === 'docker' ? 'Docker' : 'Podman'}
+                  {t('contEngineLabel', { engine: engine === 'docker' ? 'Docker' : 'Podman' })}
                 </h3>
-                <span className={style.badgeEngine}>ACTIVE</span>
+                <span className={style.badgeEngine}>{t('statusActive')}</span>
               </div>
               <p className="text-[10px] text-[#4d5b6e] font-mono mt-0.5 uppercase">
-                Łączny rozmiar zasobów: <strong className="text-white">{(sizeMb / 1024).toFixed(2)} GB</strong> ({sizeMb.toFixed(0)} MB)
+                {t('contTotalResourceSize')} <strong className="text-white">{(sizeMb / 1024).toFixed(2)} GB</strong> ({sizeMb.toFixed(0)} MB)
               </p>
             </div>
           </div>
@@ -176,12 +178,12 @@ export default function ContainerManager({ variant, onActionComplete, disk, fetc
               disabled={potentialPruneSpace === 0}
               className={`${style.buttonPrimary} disabled:opacity-30 disabled:cursor-not-allowed`}
             >
-              System Prune ({potentialPruneSpace} MB)
+              {t('contSystemPruneBtn', { mb: potentialPruneSpace })}
             </button>
             <button
               onClick={fetchResources}
               className="p-2 border border-[#1a1f26] bg-[#0c1015] hover:bg-[#1a1f26] transition-all cursor-pointer text-[#4d5b6e] hover:text-white"
-              title="Odśwież stan"
+              title={t('contRefreshState')}
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
             </button>
@@ -192,24 +194,24 @@ export default function ContainerManager({ variant, onActionComplete, disk, fetc
         <div className="space-y-3">
           <div className="flex justify-between items-center">
             <span className="text-[10px] font-bold uppercase tracking-wider text-[#4d5b6e] font-mono">
-              Uruchomione / Zatrzymane kontenery ({containers.length})
+              {t('contContainersTitle', { count: containers.length })}
             </span>
           </div>
 
           {containers.length === 0 ? (
             <div className="border border-dashed border-[#1a1f26] py-6 text-center text-xs text-[#4d5b6e] font-mono uppercase">
-              Brak aktywnych kontenerów w rejestrze {engine}
+              {t('contNoContainers', { engine })}
             </div>
           ) : (
             <div className="border border-[#1a1f26] overflow-x-auto">
               <table className="w-full text-left border-collapse text-[11px] font-mono">
                 <thead>
                   <tr className="bg-[#0c1015] border-b border-[#1a1f26] text-[#4d5b6e] uppercase text-[10px]">
-                    <th className="p-2.5">Nazwa kontenera</th>
-                    <th className="p-2.5">Obraz bazowy</th>
-                    <th className="p-2.5">Status</th>
-                    <th className="p-2.5 text-right">Zapisywalna warstwa</th>
-                    <th className="p-2.5 text-center w-12">Usuń</th>
+                    <th className="p-2.5">{t('thContainerName')}</th>
+                    <th className="p-2.5">{t('thBaseImage')}</th>
+                    <th className="p-2.5">{t('thStatus')}</th>
+                    <th className="p-2.5 text-right">{t('thWritableLayer')}</th>
+                    <th className="p-2.5 text-center w-12">{t('thDelete')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#1a1f26] text-[#e0e6ed]/90">
@@ -231,7 +233,7 @@ export default function ContainerManager({ variant, onActionComplete, disk, fetc
                           onClick={() => handleRemove(engine, 'container', c.id, c.name)}
                           disabled={c.status === 'running'}
                           className={`${style.btnDanger} disabled:opacity-25 disabled:cursor-not-allowed`}
-                          title={c.status === 'running' ? 'Nie można usunąć działającego kontenera. Zatrzymaj go najpierw.' : 'Usuń kontener'}
+                          title={c.status === 'running' ? t('contRunningDeleteWarning') : t('contDeleteContainerTitle')}
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -248,24 +250,24 @@ export default function ContainerManager({ variant, onActionComplete, disk, fetc
         <div className="space-y-3">
           <div className="flex justify-between items-center">
             <span className="text-[10px] font-bold uppercase tracking-wider text-[#4d5b6e] font-mono">
-              Przechowywane obrazy systemowe ({images.length})
+              {t('contImagesTitle', { count: images.length })}
             </span>
           </div>
 
           {images.length === 0 ? (
             <div className="border border-dashed border-[#1a1f26] py-6 text-center text-xs text-[#4d5b6e] font-mono uppercase">
-              Brak pobranych obrazów w rejestrze {engine}
+              {t('contNoImages', { engine })}
             </div>
           ) : (
             <div className="border border-[#1a1f26] overflow-x-auto">
               <table className="w-full text-left border-collapse text-[11px] font-mono">
                 <thead>
                   <tr className="bg-[#0c1015] border-b border-[#1a1f26] text-[#4d5b6e] uppercase text-[10px]">
-                    <th className="p-2.5">Repozytorium</th>
-                    <th className="p-2.5">Tag</th>
-                    <th className="p-2.5">Image ID</th>
-                    <th className="p-2.5 text-right">Rozmiar obrazu</th>
-                    <th className="p-2.5 text-center w-12">Usuń</th>
+                    <th className="p-2.5">{t('thRepository')}</th>
+                    <th className="p-2.5">{t('thTag')}</th>
+                    <th className="p-2.5">{t('thImageId')}</th>
+                    <th className="p-2.5 text-right">{t('thImageSize')}</th>
+                    <th className="p-2.5 text-center w-12">{t('thDelete')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#1a1f26] text-[#e0e6ed]/90">
@@ -284,7 +286,7 @@ export default function ContainerManager({ variant, onActionComplete, disk, fetc
                         <button
                           onClick={() => handleRemove(engine, 'image', img.id, img.repository)}
                           className={style.btnDanger}
-                          title="Usuń obraz systemowy"
+                          title={t('contDeleteImageTitle')}
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -307,10 +309,10 @@ export default function ContainerManager({ variant, onActionComplete, disk, fetc
         <Box className="w-5 h-5 shrink-0 mt-0.5 animate-pulse" />
         <div className="text-xs space-y-1">
           <span className="font-bold uppercase tracking-widest block font-sans">
-            MODUŁ KONTENERÓW DOCKER & PODMAN (ŚLEDZENIE ROZMIARU W SPACESGUARD)
+            {t('contBannerTitle')}
           </span>
           <p className="opacity-80 leading-relaxed font-mono">
-            Dowolne obrazy pobrane przez silniki <strong className="text-white">Docker</strong> oraz <strong className="text-white">Podman</strong>, a także ich aktywne i zatrzymane warstwy kontenerów tworzą pliki bezpośrednio na dysku głównym, uszczuplając wolumen wolnej przestrzeni. Moduł telemetryczny integruje dane o ich rozmiarach z ogólnym statusem dysku, dając Ci absolutną kontrolę nad miejscem.
+            {t('contBannerDesc')}
           </p>
         </div>
       </div>

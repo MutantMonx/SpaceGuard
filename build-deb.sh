@@ -58,7 +58,7 @@ echo "[5/6] Generowanie metadanych instalatora dpkg..."
 # Plik control
 cat << 'EOF' > "$BUILD_DIR/DEBIAN/control"
 Package: spaceguard
-Version: 1.0.0
+Version: 1.2.0
 Section: admin
 Priority: optional
 Architecture: amd64
@@ -101,16 +101,16 @@ chmod 755 "$BUILD_DIR/DEBIAN/prerm"
 # 7. Budowanie pakietu debianowego przy użyciu dpkg-deb
 echo "[6/6] Konsolidacja struktury i budowanie paczki .deb przy użyciu dpkg-deb..."
 mkdir -p pkg
-dpkg-deb --build "$BUILD_DIR" pkg/spaceguard_1.0.0_amd64.deb
+dpkg-deb --build "$BUILD_DIR" pkg/spaceguard_1.2.0_amd64.deb
 
 # Czyszczenie katalogów tymczasowych
 rm -rf "$BUILD_DIR"
 
 # Tworzenie absolutnego katalogu /pkg jeśli to możliwe (dla wygody usera)
 if mkdir -p /pkg 2>/dev/null; then
-  cp pkg/spaceguard_1.0.0_amd64.deb /pkg/spaceguard_1.0.0_amd64.deb || true
-  echo "Utworzono oraz skopiowano dodatkowo do absolutnej ścieżki /pkg/spaceguard_1.0.0_amd64.deb"
+  cp pkg/spaceguard_1.2.0_amd64.deb /pkg/spaceguard_1.2.0_amd64.deb || true
+  echo "Utworzono oraz skopiowano dodatkowo do absolutnej ścieżki /pkg/spaceguard_1.2.0_amd64.deb"
 fi
 
 echo "=== PACZKOWANIE ZAKOŃCZONE SUKCESEM! ==="
-echo "Paczka znajduje się w: pkg/spaceguard_1.0.0_amd64.deb"
+echo "Paczka znajduje się w: pkg/spaceguard_1.2.0_amd64.deb"

@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070a0e"/>
+      <stop offset="100%" stop-color="#0c1015"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f2a100"/>
+      <stop offset="50%" stop-color="#00f2ff"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .mono { font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace; }
+    </style>
+  </defs>
+
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <rect x="0" y="0" width="1280" height="3" fill="url(#accent)"/>
+
+  <!-- Top Bar -->
+  <rect x="20" y="15" width="1240" height="55" fill="#0f141c" stroke="#1e2633" stroke-width="1" rx="4"/>
+  <g transform="translate(35, 27)">
+    <polygon points="12,0 24,6 24,18 12,24 0,18 0,6" fill="#f2a100" fill-opacity="0.2" stroke="#f2a100" stroke-width="2"/>
+    <circle cx="12" cy="12" r="4" fill="#10b981"/>
+    <text x="34" y="17" fill="#ffffff" font-weight="900" font-size="18" class="mono" letter-spacing="1">SPACEGUARD <tspan fill="#f2a100">v1.2.0</tspan></text>
+  </g>
+  <text x="320" y="47" fill="#94a3b8" font-size="11" class="mono">MODULE: <tspan fill="#f2a100" font-weight="bold">CYBERPUNK CLI TERMINAL &amp; RPC DAEMON CONSOLE</tspan></text>
+
+  <!-- Tabs -->
+  <g transform="translate(20, 80)">
+    <rect width="1240" height="42" fill="#0b0f14" stroke="#1e2633" stroke-width="1" rx="4"/>
+    <rect x="6" y="5" width="170" height="32" fill="#0f141c" rx="3"/>
+    <text x="22" y="25" fill="#94a3b8" font-size="11" font-weight="bold" class="mono">📦 Package Manager</text>
+
+    <rect x="182" y="5" width="170" height="32" fill="#0f141c" rx="3"/>
+    <text x="198" y="25" fill="#94a3b8" font-size="11" font-weight="bold" class="mono">🗺️ Disk Space Map</text>
+
+    <rect x="358" y="5" width="160" height="32" fill="#f2a100" fill-opacity="0.18" stroke="#f2a100" stroke-width="1" rx="3"/>
+    <text x="374" y="25" fill="#f2a100" font-size="11" font-weight="bold" class="mono">💻 CLI Console</text>
+
+    <rect x="524" y="5" width="180" height="32" fill="#0f141c" rx="3"/>
+    <text x="540" y="25" fill="#94a3b8" font-size="11" font-weight="bold" class="mono">🕸️ Dependency Graph</text>
+
+    <rect x="710" y="5" width="170" height="32" fill="#0f141c" rx="3"/>
+    <text x="726" y="25" fill="#94a3b8" font-size="11" font-weight="bold" class="mono">🐳 Containers</text>
+  </g>
+
+  <!-- Terminal Window -->
+  <g transform="translate(20, 132)">
+    <rect width="1240" height="570" fill="#030508" stroke="#1e2633" stroke-width="1" rx="4"/>
+
+    <!-- Terminal Header Bar -->
+    <rect width="1240" height="35" fill="#0c1015" rx="4"/>
+    <circle cx="20" cy="18" r="5" fill="#ef4444"/>
+    <circle cx="35" cy="18" r="5" fill="#f2a100"/>
+    <circle cx="50" cy="18" r="5" fill="#10b981"/>
+    <text x="540" y="22" fill="#64748b" font-size="11" font-weight="bold" class="mono">spaceguard-cli --daemon-socket /run/spaceguard.sock</text>
+
+    <!-- Terminal Body Text -->
+    <g transform="translate(20, 55)">
+      <text x="0" y="20" fill="#f2a100" font-size="12" font-weight="bold" class="mono">root@kali:~# <tspan fill="#ffffff">spaceguard status</tspan></text>
+      
+      <text x="0" y="45" fill="#38bdf8" font-size="11" class="mono">[+] SpaceGuard Daemon Status: <tspan fill="#34d399" font-weight="bold">ACTIVE (ONLINE)</tspan></text>
+      <text x="0" y="65" fill="#cbd5e1" font-size="11" class="mono">    • Disk Usage (/): 53.4 GB / 60.0 GB (89% utilized)</text>
+      <text x="0" y="85" fill="#cbd5e1" font-size="11" class="mono">    • Reclaimable Trash: 1,240 MB (~/.Trash)</text>
+      <text x="0" y="105" fill="#cbd5e1" font-size="11" class="mono">    • Cleanable APT Cache: 2,450 MB (/var/cache/apt/archives)</text>
+
+      <text x="0" y="140" fill="#f2a100" font-size="12" font-weight="bold" class="mono">root@kali:~# <tspan fill="#ffffff">spaceguard scan --provenance</tspan></text>
+
+      <text x="0" y="165" fill="#a855f7" font-size="11" font-weight="bold" class="mono">[!] SpaceGuard Telemetry Interceptor Report:</text>
+      <text x="0" y="185" fill="#cbd5e1" font-size="11" class="mono">    • Detected manually downloaded binary: <tspan fill="#f2a100" font-weight="bold">credential-harvester</tspan></text>
+      <text x="0" y="205" fill="#cbd5e1" font-size="11" class="mono">    • Origin: wget https://github.com/phishing/gophish/master.zip</text>
+      <text x="0" y="225" fill="#cbd5e1" font-size="11" class="mono">    • User: kali (SUDO) | Footprint: 92.5 MB across 4 file paths</text>
+
+      <text x="0" y="260" fill="#f2a100" font-size="12" font-weight="bold" class="mono">root@kali:~# <tspan fill="#ffffff">spaceguard clean --all</tspan></text>
+
+      <text x="0" y="285" fill="#34d399" font-size="11" font-weight="bold" class="mono">[+] Flushed APT cache: 2,450 MB freed.</text>
+      <text x="0" y="305" fill="#34d399" font-size="11" font-weight="bold" class="mono">[+] Flushed Trash bin: 1,240 MB freed.</text>
+      <text x="0" y="325" fill="#38bdf8" font-size="11" font-weight="bold" class="mono">[+] Total Disk Space Reclaimed: 3.69 GB!</text>
+
+      <text x="0" y="365" fill="#f2a100" font-size="12" font-weight="bold" class="mono">root@kali:~# <tspan fill="#00f2ff">_</tspan></text>
+    </g>
+  </g>
+</svg>

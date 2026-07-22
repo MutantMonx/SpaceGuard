@@ -6,6 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { PackageInfo } from '../types';
 import { Network, Database, Info, GitCompare, RefreshCw } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface GraphVisualizerProps {
   packages: PackageInfo[];
@@ -20,6 +21,7 @@ export default function GraphVisualizer({
   onSelectPackage,
   variant
 }: GraphVisualizerProps) {
+  const { t } = useLanguage();
   const [activePackage, setActivePackage] = useState<PackageInfo | null>(null);
 
   useEffect(() => {
@@ -27,7 +29,7 @@ export default function GraphVisualizer({
     if (found) {
       setActivePackage(found);
     } else {
-      // Default to metasploit or the first installed package
+      // Default to the first installed package
       const defaultPkg = packages.find(p => p.status === 'installed') || packages[0];
       if (defaultPkg) {
         setActivePackage(defaultPkg);
@@ -37,7 +39,7 @@ export default function GraphVisualizer({
   }, [selectedPackageName, packages]);
 
   if (!activePackage) {
-    return <div className="p-8 text-center text-sm opacity-50">Skanowanie grafu zależności...</div>;
+    return <div className="p-8 text-center text-sm opacity-50">{t('graphLoading')}</div>;
   }
 
   // Find all packages that are installed
@@ -161,9 +163,9 @@ export default function GraphVisualizer({
         <div>
           <h3 className={`text-sm font-semibold uppercase tracking-wider flex items-center gap-2 ${getAccentHex()}`}>
             <Network className="w-4 h-4" />
-            Interaktywny Graf Zależności (D3 style)
+            {t('graphTitle')}
           </h3>
-          <p className="text-xs opacity-50">Kliknij dowolny węzeł, aby przenieść go do centrum grafu i zbadać powiązania.</p>
+          <p className="text-xs opacity-50">{t('graphSubtitle')}</p>
         </div>
         <div className="mt-2 sm:mt-0 flex gap-2">
           <select
@@ -439,22 +441,22 @@ export default function GraphVisualizer({
           <div className="absolute bottom-2 left-2 flex flex-wrap gap-x-3 gap-y-1 text-[9px] opacity-75 font-mono max-w-[95%]">
             <div className="flex items-center space-x-1">
               <span className="w-2 h-2 rounded-none bg-zinc-950 border border-red-500"></span>
-              <span>Badany pakiet</span>
+              <span>{t('graphTargetNode')}</span>
             </div>
             <div className="flex items-center space-x-1">
               <span className="w-2 h-2 rounded-none bg-zinc-900 border border-emerald-500"></span>
-              <span>Zależność (wymaga)</span>
+              <span>{t('graphDependency')}</span>
             </div>
             {reverseDeps.length > 0 && (
               <div className="flex items-center space-x-1">
                 <span className="w-2 h-2 rounded-none bg-zinc-900 border border-rose-500"></span>
-                <span>Zależność wsteczna</span>
+                <span>{t('graphRequiredBy')}</span>
               </div>
             )}
             {collabItems.length > 0 && (
               <div className="flex items-center space-x-1">
                 <span className="w-2 h-2 rounded-none bg-zinc-900 border border-dashed border-amber-400"></span>
-                <span>Współpracuje (Runtime)</span>
+                <span>{t('graphCollaborates')}</span>
               </div>
             )}
           </div>
@@ -465,13 +467,13 @@ export default function GraphVisualizer({
           <div>
             <div className="flex items-center gap-1.5 mb-2 pb-1.5 border-b border-[#1a1f26]">
               <Info className={`w-3.5 h-3.5 ${getAccentHex()}`} />
-              <span className="font-bold uppercase tracking-wider">Szczegóły pakietu</span>
+              <span className="font-bold uppercase tracking-wider">{t('graphDetails')}</span>
             </div>
             <h4 className="text-sm font-bold truncate">{activePackage.name}</h4>
             <div className="flex justify-between items-center mt-0.5 font-mono text-[10px]">
-              <span className="opacity-45">Wersja: {activePackage.version}</span>
+              <span className="opacity-45">{t('graphVersion')}: {activePackage.version}</span>
               {activePackage.isCustomFootprint && (
-                <span className="px-1 py-0.25 text-[8px] bg-amber-500/10 border border-amber-500/30 text-amber-500 font-sans uppercase">Custom Plik</span>
+                <span className="px-1 py-0.25 text-[8px] bg-amber-500/10 border border-amber-500/30 text-amber-500 font-sans uppercase">Custom File</span>
               )}
             </div>
             
@@ -482,32 +484,32 @@ export default function GraphVisualizer({
             {/* Disk and Size metrics */}
             <div className="mt-3.5 space-y-2 border-t border-b border-white/5 py-2">
               <div className="flex justify-between">
-                <span className="opacity-50">Zadeklarowany:</span>
+                <span className="opacity-50">{t('thDeclared')}:</span>
                 <span className="font-mono">{(activePackage.installedSizeKb / 1024).toFixed(1)} MB</span>
               </div>
               <div className="flex justify-between">
-                <span className="opacity-50">Rzeczywisty (du):</span>
+                <span className="opacity-50">{t('thActual')}:</span>
                 <span className="font-bold font-mono">{(activePackage.actualSizeKb / 1024).toFixed(1)} MB</span>
               </div>
               <div className="flex justify-between">
-                <span className="opacity-50">Ryzyko usunięcia:</span>
+                <span className="opacity-50">{t('graphRollbackRisk')}:</span>
                 <span className={`font-mono uppercase font-semibold ${
                   activePackage.rollbackRisk === 'high' ? 'text-red-500' :
                   activePackage.rollbackRisk === 'medium' ? 'text-yellow-500' : 'text-green-500'
                 }`}>{activePackage.rollbackRisk}</span>
               </div>
               <div className="flex justify-between">
-                <span className="opacity-50">Istotność systemowa:</span>
+                <span className="opacity-50">{t('graphImportance')}:</span>
                 <span className="font-bold font-mono">{activePackage.importance}/10</span>
               </div>
             </div>
 
             {/* Provenance Audit logs */}
             <div className="mt-3 space-y-2 border-b border-white/5 pb-2 text-[10.5px]">
-              <div className="text-[10px] font-bold uppercase tracking-wider text-[#4d5b6e]">Metadane Pochodzenia (Provenance)</div>
+              <div className="text-[10px] font-bold uppercase tracking-wider text-[#4d5b6e]">{t('graphProvenanceTitle')}</div>
               
               <div className="flex justify-between">
-                <span className="opacity-50">Instalator (Użytkownik):</span>
+                <span className="opacity-50">{t('graphInstaller')}</span>
                 <span className="font-bold text-white flex items-center gap-1">
                   {activePackage.installedBy || 'root'}
                   {activePackage.hasSudo && (
@@ -517,30 +519,30 @@ export default function GraphVisualizer({
               </div>
 
               <div className="flex justify-between">
-                <span className="opacity-50">Kanał / Metoda:</span>
+                <span className="opacity-50">{t('graphMethod')}</span>
                 <span className="text-zinc-300 uppercase font-mono text-[9px]">
                   {activePackage.installMethod || 'apt-get'}
                 </span>
               </div>
 
               <div>
-                <span className="opacity-50 block mb-0.5">Źródło pobrania:</span>
+                <span className="opacity-50 block mb-0.5">{t('graphSource')}</span>
                 <span className="text-[9px] text-blue-400 break-all select-all font-sans bg-black/40 p-1 block rounded border border-white/5">
-                  {activePackage.sourceUrl || 'Debian Mirror'}
+                  {activePackage.sourceUrl || t('graphDebianMirror')}
                 </span>
               </div>
 
               <div className="flex justify-between">
-                <span className="opacity-50">Instalacja:</span>
+                <span className="opacity-50">{t('graphInstalled')}</span>
                 <span className="text-zinc-300 font-mono">
-                  {activePackage.installedAt ? new Date(activePackage.installedAt).toLocaleString() : 'Preinstalowany'}
+                  {activePackage.installedAt ? new Date(activePackage.installedAt).toLocaleString() : t('graphPreinstalled')}
                 </span>
               </div>
 
               <div className="flex justify-between">
-                <span className="opacity-50">Ostatnie użycie:</span>
+                <span className="opacity-50">{t('graphLastUsed')}</span>
                 <span className="text-emerald-400 font-mono">
-                  {activePackage.lastUsedAt ? new Date(activePackage.lastUsedAt).toLocaleString() : 'Preinstalowany'}
+                  {activePackage.lastUsedAt ? new Date(activePackage.lastUsedAt).toLocaleString() : t('graphPreinstalled')}
                 </span>
               </div>
             </div>
@@ -549,7 +551,7 @@ export default function GraphVisualizer({
             {collabItems.length > 0 && (
               <div className="mt-3">
                 <div className="flex items-center gap-1 opacity-50 mb-1 text-[10px] font-bold uppercase tracking-wider text-[#4d5b6e]">
-                  <span>Runtime Collaborators:</span>
+                  <span>{t('graphCollaborators')}</span>
                 </div>
                 <div className="flex flex-wrap gap-1">
                   {collabItems.map(collab => (
@@ -577,7 +579,7 @@ export default function GraphVisualizer({
               <div className="mt-3">
                 <div className="flex items-center gap-1 opacity-50 mb-1 text-[10px] font-bold uppercase tracking-wider text-[#4d5b6e]">
                   <Database className="w-3 h-3" />
-                  <span>Biblioteki współdzielone:</span>
+                  <span>{t('graphSharedLibs')}</span>
                 </div>
                 <div className="flex flex-wrap gap-1 max-h-20 overflow-y-auto">
                   {activePackage.sharedLibraries.map(lib => (
@@ -601,7 +603,7 @@ export default function GraphVisualizer({
               }`}
             >
               <RefreshCw className="w-3 h-3" />
-              Przeładuj węzeł
+              {t('graphReloadNode')}
             </button>
           </div>
         </div>

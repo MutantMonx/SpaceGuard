@@ -6,6 +6,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Terminal as TerminalIcon, CornerDownLeft, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
 import { CommandHistoryItem } from '../types';
+import { useLanguage } from '../context/LanguageContext';
 
 interface TerminalProps {
   onCommandExecuted: (output: string) => void;
@@ -13,11 +14,12 @@ interface TerminalProps {
 }
 
 export default function Terminal({ onCommandExecuted, variant }: TerminalProps) {
+  const { t } = useLanguage();
   const [input, setInput] = useState('');
   const [history, setHistory] = useState<CommandHistoryItem[]>([
     {
       command: 'system-init',
-      output: 'SpaceGuard CLI v1.2.0 initialized. Wpisz "help" lub "spaceguard help" aby zobaczyć dostępne polecenia.',
+      output: t('cliInitMsg', { ver: '1.2.0' }),
       timestamp: new Date().toLocaleTimeString()
     }
   ]);
@@ -40,7 +42,7 @@ export default function Terminal({ onCommandExecuted, variant }: TerminalProps) 
     // Add command to physical terminal list
     const newHistoryItem: CommandHistoryItem = {
       command: trimmed,
-      output: 'Wykonuję...',
+      output: '...',
       timestamp: new Date().toLocaleTimeString()
     };
     
@@ -58,7 +60,7 @@ export default function Terminal({ onCommandExecuted, variant }: TerminalProps) 
       
       setHistory(prev => {
         const updated = [...prev];
-        updated[updated.length - 1].output = data.output || data.error || 'Błąd wykonania.';
+        updated[updated.length - 1].output = data.output || data.error || 'Error.';
         return updated;
       });
 
@@ -67,7 +69,7 @@ export default function Terminal({ onCommandExecuted, variant }: TerminalProps) 
     } catch (err: any) {
       setHistory(prev => {
         const updated = [...prev];
-        updated[updated.length - 1].output = `Błąd sieci: Nie można połączyć z demonem SpaceGuard.`;
+        updated[updated.length - 1].output = t('cliErrorConn');
         return updated;
       });
     } finally {
@@ -168,12 +170,12 @@ export default function Terminal({ onCommandExecuted, variant }: TerminalProps) 
       <div className="flex items-center justify-between px-4 py-2 border-b border-[#1a1f26] bg-[#0c1015]">
         <div className="flex items-center space-x-2">
           <TerminalIcon className={`w-4 h-4 ${getAccentColor()}`} />
-          <span className={`text-xs font-semibold uppercase tracking-wider ${style.text}`}>Konsola SpaceGuard CLI (CLI simulator)</span>
+          <span className={`text-xs font-semibold uppercase tracking-wider ${style.text}`}>{t('cliConsoleTitle')}</span>
         </div>
         <div className="flex items-center space-x-2">
           <button
             onClick={clearConsole}
-            title="Wyczyść konsolę"
+            title={t('cliClearBtn')}
             className="p-1 rounded-none hover:bg-white/5 text-neutral-400 transition-colors"
           >
             <Trash2 className="w-3.5 h-3.5" />
@@ -192,7 +194,7 @@ export default function Terminal({ onCommandExecuted, variant }: TerminalProps) 
           <div key={idx} className="space-y-1">
             {item.command !== 'system-init' && (
               <div className="flex items-start space-x-2 text-xs font-mono">
-                <span className={style.prompt}>spaceguard@kali:~$</span>
+                <span className={style.prompt}>spaceguard@system:~$</span>
                 <span className="font-semibold text-white">{item.command}</span>
                 <span className="text-[10px] ml-auto opacity-40">{item.timestamp}</span>
               </div>
@@ -204,8 +206,8 @@ export default function Terminal({ onCommandExecuted, variant }: TerminalProps) 
         ))}
         {loading && (
           <div className="flex items-center space-x-2 text-xs animate-pulse opacity-60 font-mono">
-            <span className={style.prompt}>spaceguard@kali:~$</span>
-            <span className="font-semibold text-white">Wykonuję zapytanie systemowe...</span>
+            <span className={style.prompt}>spaceguard@system:~$</span>
+            <span className="font-semibold text-white">{t('cliExecuting')}</span>
           </div>
         )}
         <div ref={bottomRef} />
@@ -213,7 +215,7 @@ export default function Terminal({ onCommandExecuted, variant }: TerminalProps) 
 
       {/* Quick command buttons */}
       <div className="px-4 py-2 border-t border-[#1a1f26] flex flex-wrap gap-1.5 text-xs bg-[#0c1015]">
-        <span className="self-center mr-1 text-[11px] opacity-50">Szybkie polecenia:</span>
+        <span className="self-center mr-1 text-[11px] opacity-50">{t('cliQuickCmds')}</span>
         <button onClick={() => autocompleteCommand('spaceguard status')} className={`px-2 py-0.5 rounded-none border text-[11px] transition-all cursor-pointer ${style.accent}`}>status</button>
         <button onClick={() => autocompleteCommand('spaceguard scan')} className={`px-2 py-0.5 rounded-none border text-[11px] transition-all cursor-pointer ${style.accent}`}>scan</button>
         <button onClick={() => autocompleteCommand('spaceguard packages list')} className={`px-2 py-0.5 rounded-none border text-[11px] transition-all cursor-pointer ${style.accent}`}>packages list</button>
@@ -224,7 +226,7 @@ export default function Terminal({ onCommandExecuted, variant }: TerminalProps) 
 
       {/* Terminal Input */}
       <div className="p-3 border-t border-[#1a1f26] flex items-center space-x-2 bg-[#0c1015]">
-        <span className={style.prompt}>spaceguard@kali:~$</span>
+        <span className={style.prompt}>spaceguard@system:~$</span>
         <input
           id="cli-input-box"
           ref={inputRef}
@@ -233,7 +235,7 @@ export default function Terminal({ onCommandExecuted, variant }: TerminalProps) 
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           disabled={loading}
-          placeholder="Wpisz komendę, np. 'spaceguard status' lub 'help'..."
+          placeholder={t('cliInputPlaceholder')}
           className={`flex-1 bg-transparent text-sm font-mono border-none focus:outline-none ${style.input}`}
         />
         <button

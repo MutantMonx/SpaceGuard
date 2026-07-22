@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070a0e"/>
+      <stop offset="100%" stop-color="#0c1015"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <style>
+      .mono { font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace; }
+    </style>
+  </defs>
+
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <rect x="0" y="0" width="1280" height="3" fill="url(#accent)"/>
+
+  <!-- Top Bar -->
+  <rect x="20" y="15" width="1240" height="55" fill="#0f141c" stroke="#1e2633" stroke-width="1" rx="4"/>
+  <g transform="translate(35, 27)">
+    <polygon points="12,0 24,6 24,18 12,24 0,18 0,6" fill="#38bdf8" fill-opacity="0.2" stroke="#38bdf8" stroke-width="2"/>
+    <circle cx="12" cy="12" r="4" fill="#34d399"/>
+    <text x="34" y="17" fill="#ffffff" font-weight="900" font-size="18" class="mono" letter-spacing="1">SPACEGUARD <tspan fill="#38bdf8">v1.2.0</tspan></text>
+  </g>
+  <text x="320" y="47" fill="#94a3b8" font-size="11" class="mono">MODULE: <tspan fill="#38bdf8" font-weight="bold">DOCKER &amp; PODMAN CONTAINER LAYER AUDIT</tspan></text>
+
+  <!-- Tabs -->
+  <g transform="translate(20, 80)">
+    <rect width="1240" height="42" fill="#0b0f14" stroke="#1e2633" stroke-width="1" rx="4"/>
+    <rect x="6" y="5" width="170" height="32" fill="#0f141c" rx="3"/>
+    <text x="22" y="25" fill="#94a3b8" font-size="11" font-weight="bold" class="mono">📦 Package Manager</text>
+
+    <rect x="182" y="5" width="170" height="32" fill="#0f141c" rx="3"/>
+    <text x="198" y="25" fill="#94a3b8" font-size="11" font-weight="bold" class="mono">🗺️ Disk Space Map</text>
+
+    <rect x="358" y="5" width="160" height="32" fill="#0f141c" rx="3"/>
+    <text x="374" y="25" fill="#94a3b8" font-size="11" font-weight="bold" class="mono">💻 CLI Console</text>
+
+    <rect x="524" y="5" width="180" height="32" fill="#0f141c" rx="3"/>
+    <text x="540" y="25" fill="#94a3b8" font-size="11" font-weight="bold" class="mono">🕸️ Dependency Graph</text>
+
+    <rect x="710" y="5" width="180" height="32" fill="#38bdf8" fill-opacity="0.18" stroke="#38bdf8" stroke-width="1" rx="3"/>
+    <text x="726" y="25" fill="#38bdf8" font-size="11" font-weight="bold" class="mono">🐳 Containers</text>
+  </g>
+
+  <!-- Main Container Workspace -->
+  <g transform="translate(20, 132)">
+    <rect width="1240" height="570" fill="#0f141c" stroke="#1e2633" stroke-width="1" rx="4"/>
+
+    <!-- Stats Bar -->
+    <g transform="translate(15, 15)">
+      <rect width="285" height="65" fill="#070a0e" stroke="#1e2633" stroke-width="1" rx="3"/>
+      <text x="15" y="22" fill="#64748b" font-size="10" font-weight="bold" class="mono">REGISTERED CONTAINERS</text>
+      <text x="15" y="48" fill="#ffffff" font-size="18" font-weight="bold" class="mono">6 Active / Exited</text>
+
+      <rect x="300" width="285" height="65" fill="#070a0e" stroke="#1e2633" stroke-width="1" rx="3"/>
+      <text x="315" y="22" fill="#64748b" font-size="10" font-weight="bold" class="mono">WRITABLE OVERLAY OVERHEAD</text>
+      <text x="315" y="48" fill="#f2a100" font-size="18" font-weight="bold" class="mono">3.85 GB</text>
+
+      <rect x="585" width="285" height="65" fill="#070a0e" stroke="#1e2633" stroke-width="1" rx="3"/>
+      <text x="600" y="22" fill="#64748b" font-size="10" font-weight="bold" class="mono">DANGLING IMAGES &amp; PODS</text>
+      <text x="600" y="48" fill="#ef4444" font-size="18" font-weight="bold" class="mono">12 Layers (1.4 GB)</text>
+
+      <rect x="880" width="345" height="65" fill="#38bdf8" fill-opacity="0.1" stroke="#38bdf8" stroke-width="1" rx="3"/>
+      <text x="900" y="40" fill="#38bdf8" font-size="12" font-weight="bold" class="mono">🧹 Prune All Unused Container Layers</text>
+    </g>
+
+    <!-- Container Table Header -->
+    <g transform="translate(15, 95)">
+      <rect width="1210" height="32" fill="#141a24"/>
+      <text x="15" y="20" fill="#64748b" font-size="10" font-weight="bold" class="mono">CONTAINER NAME</text>
+      <text x="280" y="20" fill="#64748b" font-size="10" font-weight="bold" class="mono">BASE IMAGE</text>
+      <text x="520" y="20" fill="#64748b" font-size="10" font-weight="bold" class="mono">ENGINE</text>
+      <text x="680" y="20" fill="#64748b" font-size="10" font-weight="bold" class="mono">STATUS</text>
+      <text x="850" y="20" fill="#64748b" font-size="10" font-weight="bold" class="mono">WRITABLE LAYER</text>
+      <text x="1050" y="20" fill="#64748b" font-size="10" font-weight="bold" class="mono">ACTION</text>
+    </g>
+
+    <!-- Row 1: kali-rolling-test -->
+    <g transform="translate(15, 130)">
+      <rect width="1210" height="42" fill="#0f141c"/>
+      <text x="15" y="25" fill="#ffffff" font-size="12" font-weight="bold" class="mono">kali-rolling-test</text>
+      <text x="280" y="25" fill="#94a3b8" font-size="11" class="mono">kalilinux/kali-rolling:latest</text>
+      <text x="520" y="25" fill="#38bdf8" font-size="11" font-weight="bold" class="mono">Docker</text>
+      <rect x="680" y="8" width="80" height="22" fill="#10b981" fill-opacity="0.15" rx="3"/>
+      <text x="692" y="23" fill="#34d399" font-size="10" font-weight="bold" class="mono">running</text>
+      <text x="850" y="25" fill="#f2a100" font-size="12" font-weight="bold" class="mono">1.24 GB</text>
+      <rect x="1050" y="7" width="80" height="24" fill="#ef4444" fill-opacity="0.2" stroke="#ef4444" stroke-width="1" rx="3"/>
+      <text x="1068" y="23" fill="#f87171" font-size="10" font-weight="bold" class="mono">DELETE</text>
+    </g>
+
+    <!-- Row 2: postgres-db -->
+    <g transform="translate(15, 175)">
+      <rect width="1210" height="42" fill="#161e2a"/>
+      <text x="15" y="25" fill="#ffffff" font-size="12" font-weight="bold" class="mono">postgres-db</text>
+      <text x="280" y="25" fill="#94a3b8" font-size="11" class="mono">postgres:16-alpine</text>
+      <text x="520" y="25" fill="#a855f7" font-size="11" font-weight="bold" class="mono">Podman</text>
+      <rect x="680" y="8" width="80" height="22" fill="#ef4444" fill-opacity="0.15" rx="3"/>
+      <text x="695" y="23" fill="#f87171" font-size="10" font-weight="bold" class="mono">exited</text>
+      <text x="850" y="25" fill="#f2a100" font-size="12" font-weight="bold" class="mono">840 MB</text>
+      <rect x="1050" y="7" width="80" height="24" fill="#ef4444" fill-opacity="0.2" stroke="#ef4444" stroke-width="1" rx="3"/>
+      <text x="1068" y="23" fill="#f87171" font-size="10" font-weight="bold" class="mono">DELETE</text>
+    </g>
+
+    <!-- Row 3: redis-cache -->
+    <g transform="translate(15, 220)">
+      <rect width="1210" height="42" fill="#0f141c"/>
+      <text x="15" y="25" fill="#ffffff" font-size="12" font-weight="bold" class="mono">redis-cache</text>
+      <text x="280" y="25" fill="#94a3b8" font-size="11" class="mono">redis:7-alpine</text>
+      <text x="520" y="25" fill="#38bdf8" font-size="11" font-weight="bold" class="mono">Docker</text>
+      <rect x="680" y="8" width="80" height="22" fill="#10b981" fill-opacity="0.15" rx="3"/>
+      <text x="692" y="23" fill="#34d399" font-size="10" font-weight="bold" class="mono">running</text>
+      <text x="850" y="25" fill="#34d399" font-size="12" font-weight="bold" class="mono">14 MB</text>
+      <rect x="1050" y="7" width="80" height="24" fill="#ef4444" fill-opacity="0.2" stroke="#ef4444" stroke-width="1" rx="3"/>
+      <text x="1068" y="23" fill="#f87171" font-size="10" font-weight="bold" class="mono">DELETE</text>
+    </g>
+  </g>
+</svg>

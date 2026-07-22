@@ -6,6 +6,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Shield, ShieldAlert, ShieldCheck, Activity, Cpu, Trash2, CpuIcon, Check, Settings, Play } from 'lucide-react';
 import { DiskStatus } from '../types';
+import { useLanguage } from '../context/LanguageContext';
 
 interface SystemTrayProps {
   disk: DiskStatus;
@@ -14,6 +15,7 @@ interface SystemTrayProps {
 }
 
 export default function SystemTray({ disk, onActionComplete, variant }: SystemTrayProps) {
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [daemonActive, setDaemonActive] = useState(true);
   const [simulatedCpu, setSimulatedCpu] = useState(0.4);
@@ -68,7 +70,7 @@ export default function SystemTray({ disk, onActionComplete, variant }: SystemTr
       return {
         color: 'text-red-500 bg-red-950/20 border-red-900/40 animate-pulse',
         textColor: 'text-red-400',
-        badge: '▲ KRYTYCZNY (CRITICAL)',
+        badge: `▲ ${t('critical')}`,
         icon: <ShieldAlert className="w-4 h-4 text-red-500" />
       };
     }
@@ -76,14 +78,14 @@ export default function SystemTray({ disk, onActionComplete, variant }: SystemTr
       return {
         color: 'text-amber-500 bg-amber-950/20 border-amber-900/40',
         textColor: 'text-amber-400',
-        badge: '▲ OSTRZEŻENIE (WARNING)',
+        badge: `▲ ${t('warning')}`,
         icon: <ShieldAlert className="w-4 h-4 text-amber-500" />
       };
     }
     return {
       color: `${themeAccent.color} ${themeAccent.bg} ${themeAccent.border}`,
       textColor: themeAccent.color,
-      badge: '● STABILNY (OK)',
+      badge: `● ${t('stable')}`,
       icon: <ShieldCheck className="w-4 h-4" />
     };
   };

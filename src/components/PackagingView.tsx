@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { Terminal, Shield, FileText, Settings, Heart } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface PackagingViewProps {
   variant: 'Forge' | 'Atlas' | 'Pulse' | 'Zen';
@@ -60,6 +61,7 @@ CPUQuota=5%
 WantedBy=default.target`;
 
 export default function PackagingView({ variant }: PackagingViewProps) {
+  const { t } = useLanguage();
   const panelStyle = () => {
     switch (variant) {
       case 'Forge':
@@ -87,9 +89,9 @@ export default function PackagingView({ variant }: PackagingViewProps) {
       <div className="pb-3 border-b border-[#1a1f26] mb-4">
         <h3 className={`text-sm font-semibold uppercase tracking-wider flex items-center gap-2 ${getAccentHex()}`}>
           <FileText className="w-4 h-4" />
-          Debian & Kali Linux Packaging Suite (Build configs)
+          {t('packSuiteTitle')}
         </h3>
-        <p className="text-xs opacity-50">Struktura paczkowania systemowego .deb do instalacji w systemach Debian/Kali z demonem systemd.</p>
+        <p className="text-xs opacity-50">{t('packSuiteSubtitle')}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
