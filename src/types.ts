@@ -75,3 +75,23 @@ export interface CommandHistoryItem {
   output: string;
   timestamp: string;
 }
+
+export interface DiskMapItem {
+  id: string;
+  name: string;
+  path: string;
+  sizeMb: number;
+  sizeGb: number;
+  percentageOfUsed: number;
+  type: 'folder' | 'application' | 'container' | 'cache' | 'trash' | 'user_data' | 'system_core' | 'usb_external';
+  category: string;
+  createdAt: string;
+  updatedAt: string;
+  itemCount?: number;
+  riskLevel: 'none' | 'low' | 'medium' | 'high';
+  canPurge: boolean;
+  dependencies?: string[];
+  description?: string;
+  iconName?: string;
+}
+

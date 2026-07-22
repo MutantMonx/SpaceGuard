@@ -6,16 +6,22 @@
 [![Language](https://img.shields.io/badge/Language-TypeScript%20%7C%20React%20%7C%20Node.js-3178C6.svg)]()
 [![Release](https://img.shields.io/badge/Version-1.2.0-brightgreen.svg)](https://github.com/MutantMonx/SpaceGuard/releases)
 
-> **Lightweight Disk Space & Dependency Optimizer for Debian and Kali Linux Systems**
+> **Lightweight Disk Space & Comprehensive Dependency Optimizer for Debian and Kali Linux Systems**
+> **Created by [monx.one](https://monx.one/)**
 
-SpaceGuard is an intelligent, low-footprint system utility designed specifically for Debian, Kali Linux, and Ubuntu environments. It monitors storage utilization, tracks orphan package dependencies, detects custom binary footprints (installed outside standard APT repos), scans container runtime layers (Docker & Podman), and provides immediate single-click disk reclamation.
+SpaceGuard is an intelligent, low-footprint system utility designed specifically for Debian, Kali Linux, and Ubuntu environments. Built on a strict **"Monitor Everything"** policy, SpaceGuard captures and categorizes 100% of data occupying disk storage — including APT packages, custom binary downloads (`wget`/`curl`), Docker & Podman container layers, system caches, user trash bins, and external USB ingests.
 
 ---
 
 ## 🌟 Key Features
 
+### 🗺️ Interactive Disk Space Map & Treemap
+- **Folder & Application Modes:** Switch seamlessly between directory hierarchy breakdown (`/usr`, `/var`, `/home`, `/opt`, `/tmp`, `/lib`, `/etc`) and granular application/download tiles.
+- **Hover & Metrics Summary:** View exact disk footprint (MB/GB), percentage of used storage, path location, first discovered date, and last access date on hover.
+- **Contextual Actions:** Right-click any tile to copy paths, inspect dependencies in the D3 graph, quick-clean/purge resources, or add items to the protected safeguard exclude list.
+
 ### 🔍 Deep Scan & Live Resource Audit
-- **Factual Disk State Audit:** Scans system packages (`dpkg`), `/var/cache/apt/archives`, user Trash bins, and custom `/home` download directories.
+- **Factual Disk State Audit:** Scans system packages (`dpkg`), `/var/cache/apt/archives`, user Trash bins, custom downloads, and USB ingests.
 - **Container Runtime Scrapers:** Detects dangling Docker & Podman overlay images (`/var/lib/docker/overlay2`), exited containers, and unused pods.
 - **Zero-Wait Ingestion:** Immediately indexes pre-existing tools and downloads on filled disks without waiting for background event triggers.
 
@@ -29,7 +35,7 @@ SpaceGuard is an intelligent, low-footprint system utility designed specifically
 
 ### ⚡ Low-Resource Daemon Architecture
 - **Ultra-Compact Footprint:** Resident memory footprint maintained strictly below **40 MB RAM**.
-- **CLI & REST API Integration:** Full headless control via `spaceguard` CLI binary or JSON REST API endpoints (`/api/packages`, `/api/containers`, `/api/cli`).
+- **CLI & REST API Integration:** Full headless control via `spaceguard` CLI binary or JSON REST API endpoints (`/api/packages`, `/api/containers`, `/api/diskmap`, `/api/cli`).
 
 ### 🎨 Customizable Cyberpunk Console Themes & Multilingual UI
 - **4 Custom Engine Themes:**

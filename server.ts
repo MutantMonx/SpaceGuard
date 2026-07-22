@@ -34,6 +34,16 @@ async function startServer() {
     }
   });
 
+  // API Route: Get Disk Space Treemap and File Mapping
+  app.get('/api/diskmap', (req, res) => {
+    try {
+      const mode = (req.query.mode as 'folders' | 'applications') || 'applications';
+      res.json(simulator.getDiskMap(mode));
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   // API Route: Get a specific package's metadata and connections
   app.get('/api/packages/:name', (req, res) => {
     try {

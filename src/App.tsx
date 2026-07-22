@@ -32,6 +32,7 @@ import LogoGenerator from './components/LogoGenerator';
 import PackagingView from './components/PackagingView';
 import ContainerManager from './components/ContainerManager';
 import DeepScanModule from './components/DeepScanModule';
+import { DiskSpaceMap } from './components/DiskSpaceMap';
 
 export default function App() {
   const { lang, setLang, toggleLang, t } = useLanguage();
@@ -44,7 +45,7 @@ export default function App() {
     cacheSizeMb: 2450
   });
   
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'cli' | 'graph' | 'logo' | 'packaging' | 'containers' | 'deepscan'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'cli' | 'graph' | 'logo' | 'packaging' | 'containers' | 'deepscan' | 'treemap'>('dashboard');
   const [selectedPackageName, setSelectedPackageName] = useState('metasploit-framework');
   const [variant, setVariant] = useState<UIViewVariant>('Pulse'); // Let's default to Pulse (Cyan Neon) as it maps perfectly to original design HTML
   
@@ -555,6 +556,15 @@ export default function App() {
               >
                 {t('tabDeepScan')}
               </button>
+              <button
+                onClick={() => setActiveTab('treemap')}
+                className={`px-4 py-2.5 border-b-2 -mb-[2px] cursor-pointer transition-all flex items-center gap-1.5 ${
+                  activeTab === 'treemap' ? style.activeTab + ' border-current font-bold' : style.inactiveTab + ' border-transparent'
+                }`}
+              >
+                <span>🗺️</span>
+                <span>{t('tabTreemap')}</span>
+              </button>
             </div>
 
             {/* TAB OUTLET CONTENT */}
@@ -616,21 +626,46 @@ export default function App() {
                   fetchData={fetchData}
                 />
               )}
+
+              {activeTab === 'treemap' && (
+                <DiskSpaceMap
+                  language={lang}
+                  onNavigateToGraph={(pkgName) => {
+                    setSelectedPackageName(pkgName);
+                    setActiveTab('graph');
+                  }}
+                  onRefreshDiskStatus={fetchData}
+                />
+              )}
             </div>
           </>
         )}
       </main>
 
-      {/* Robust scifi console footer matching Geometric Balance */}
-      <footer className="h-16 border-t border-[#1a1f26] bg-[#0c1015] flex flex-col sm:flex-row items-center px-8 justify-between text-[10px] font-mono text-[#4d5b6e] gap-2 py-3 sm:py-0 shrink-0">
-        <div className="flex flex-wrap justify-center gap-6">
-          <div>CONNECTION: SECURE (256-BIT SSL)</div>
-          <div>UPTIME: 142D 09H 22M</div>
-          <div className="hidden md:block">SPACEGUARD © 2026 KALI GNU/LINUX OPTIMIZER</div>
+      {/* Robust scifi console footer with monx.one branding */}
+      <footer className="border-t border-[#1a1f26] bg-[#0c1015] flex flex-col md:flex-row items-center px-6 py-4 justify-between text-xs font-mono text-[#4d5b6e] gap-4 shrink-0">
+        <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
+          <a
+            href="https://monx.one/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 font-bold transition-all group"
+          >
+            <img src="/monx_one_logo.svg" alt="monx.one logo" className="h-5 opacity-90 group-hover:opacity-100 transition-opacity" />
+            <span className="underline underline-offset-4 decoration-cyan-500/40 group-hover:decoration-cyan-400">
+              created by monx.one
+            </span>
+          </a>
+          <span className="text-slate-700 hidden sm:inline">•</span>
+          <div className="text-slate-400">All rights reserved under Apache License 2.0</div>
         </div>
-        <div className="flex gap-4 items-center">
-          <div className={`w-2 h-2 rounded-full animate-pulse bg-current ${style.accentText} ${style.glowClass}`}></div>
-          <span className="tracking-widest">LIVE DATA STREAMING</span>
+
+        <div className="flex items-center gap-6 text-[11px]">
+          <div>SPACEGUARD © 2026 DEBIAN OPTIMIZER</div>
+          <div className="flex items-center gap-2">
+            <div className={`w-2 h-2 rounded-full animate-pulse bg-current ${style.accentText} ${style.glowClass}`}></div>
+            <span className="tracking-widest">ONLINE</span>
+          </div>
         </div>
       </footer>
     </div>

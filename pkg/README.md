@@ -1,108 +1,111 @@
-# Instrukcja Instalacji i Zarządzania Pakietem Debian: SpaceGuard
+# Debian Package Installation & Repository Management: SpaceGuard
 
-Pomyślnie wygenerowano i skompilowano w pełni samodzielną paczkę instalacyjną `.deb` systemu **SpaceGuard** w wersji **1.0.0** dla architektury **amd64**.
+The Debian installation package (`.deb`) for **SpaceGuard v1.2.0** (`amd64` architecture) has been compiled and assembled. Created by **monx.one**.
 
-Paczka zawiera:
-1. Skompilowaną i zoptymalizowaną aplikację frontendową (React) oraz backendową (Node/Express).
-2. Binarkę rozruchową w systemie pod ścieżką `/usr/bin/spaceguard`.
-3. Skonfigurowaną usługę systemową **Systemd** (`spaceguard.service`) dbającą o to, by demon działał stabilnie i automatycznie uruchamiał się przy starcie systemu.
-4. Skrypty instalatora automatycznie przeładowujące Systemd i dbające o proces deinstalacji.
+The package includes:
+1. Compiled and optimized frontend application (React) and backend server daemon (Node/Express).
+2. System launcher binary placed at `/usr/bin/spaceguard`.
+3. Configured **Systemd** service unit (`spaceguard.service`) ensuring persistent daemon background execution and automatic boot start.
+4. Installer pre/post scripts handling systemd reloads and clean uninstallation.
 
 ---
 
-## 🚀 Metoda 1: Szybka instalacja bezpośrednia (dpkg)
+## 🚀 Method 1: Direct Package Installation (`dpkg`)
 
-Jeśli chcesz zainstalować paczkę bezpośrednio na bieżącej maszynie Debian/Kali Linux:
+To install the `.deb` package directly on your Debian or Kali Linux machine:
 
 ```bash
-# 1. Przejdź do folderu z paczką (lub użyj ścieżki bezwzględnej /pkg/)
+# 1. Navigate to the package directory
 cd pkg/
 
-# 2. Zainstaluj pakiet za pomocą menedżera dpkg
-sudo dpkg -i spaceguard_1.0.0_amd64.deb
+# 2. Install package using dpkg
+sudo dpkg -i spaceguard_1.2.0_amd64.deb
 
-# 3. W razie wystąpienia brakujących zależności (np. brak nodejs), doinstaluj je automatycznie:
+# 3. Automatically resolve and install any missing system dependencies:
 sudo apt-get install -f
 ```
 
 ---
 
-## 📦 Metoda 2: Utworzenie lokalnego repozytorium APT (Instalacja przez `sudo apt install`)
+## 📦 Method 2: Local APT Repository (`sudo apt install`)
 
-Aby dodać pakiet do własnego lokalnego repozytorium APT, dzięki czemu system będzie mógł wyszukiwać, dopasowywać i instalować oprogramowanie za pomocą standardowego polecenia `sudo apt install spaceguard`:
+To host SpaceGuard in a local or remote APT repository so users can install updates via `sudo apt install spaceguard`:
 
-### Krok 2.1: Przygotowanie katalogu repozytorium
-Wybierz bezpieczny katalog w systemie operacyjnym, który posłuży za lokalny serwer pakietów, na przykład `/opt/spaceguard-repo/`:
+### Step 2.1: Repository Directory Structure
+Select a directory for your repository host, for example `/opt/spaceguard-repo/`:
 
 ```bash
-# Stwórz strukturę katalogów repozytorium
+# Create repository directory structure
 sudo mkdir -p /opt/spaceguard-repo/binary
 
-# Skopiuj tam przygotowaną paczkę .deb
-sudo cp spaceguard_1.0.0_amd64.deb /opt/spaceguard-repo/binary/
+# Copy the .deb package
+sudo cp spaceguard_1.2.0_amd64.deb /opt/spaceguard-repo/binary/
 ```
 
-### Krok 2.2: Generowanie indeksu pakietów repozytorium
-Użyjemy narzędzia `dpkg-scanpackages` (dostarczanego przez pakiet `dpkg-dev`), aby stworzyć spakowany plik indeksu `Packages.gz`:
+### Step 2.2: Generate Package Index
+Use `dpkg-scanpackages` (provided by `dpkg-dev`) to construct the compressed `Packages.gz` index:
 
 ```bash
-# Doinstaluj wymagane narzędzia dpkg-dev, jeśli jeszcze ich nie masz
+# Install dpkg-dev tools if not present
 sudo apt update && sudo apt install -y dpkg-dev
 
-# Przejdła do katalogu głównego repozytorium i wygeneruj indeks
+# Generate repository package index
 cd /opt/spaceguard-repo/
 dpkg-scanpackages binary /dev/null | gzip -9c > binary/Packages.gz
 ```
 
-### Krok 2.3: Rejestracja repozytorium w systemie APT
-Dodaj nowe lokalne źródło pakietów jako plik konfiguracyjny w `/etc/apt/sources.list.d/`. Ponieważ jest to repozytorium lokalne i niepodpisane kluczem GPG, musimy oznaczyć je flagą `[trusted=yes]`:
+### Step 2.3: Register APT Source
+Add the repository source file to `/etc/apt/sources.list.d/`. Using `[trusted=yes]` marks local unsigned repos as trusted:
 
 ```bash
 echo "deb [trusted=yes] file:/opt/spaceguard-repo binary/" | sudo tee /etc/apt/sources.list.d/spaceguard.list
 ```
 
-### Krok 2.4: Instalacja pakietu
-Od teraz Twoja paczka jest pełnoprawnym elementem bazy danych APT! Zaktualizuj listę pakietów i zainstaluj program:
+### Step 2.4: Install via APT
+Update package index and install SpaceGuard:
 
 ```bash
-# Zaktualizuj bazę źródłową APT
+# Update APT index
 sudo apt update
 
-# Zainstaluj system SpaceGuard za pomocą APT
+# Install SpaceGuard via APT
 sudo apt install spaceguard
 ```
 
 ---
 
-## 🛠️ Zarządzanie daemonem po instalacji
+## 🛠️ Systemd Daemon Management
 
-Po pomyślnej instalacji (dowolną z powyższych metod) instalator automatycznie zarejestruje, aktywuje i uruchomi usługę systemową. Możesz nią sterować za pomocą poniższych poleceń:
+After installation, the SpaceGuard daemon service starts automatically. Manage it using standard systemctl commands:
 
-*   **Sprawdzenie statusu działania usługi:**
+*   **Check Service Status:**
     ```bash
     sudo systemctl status spaceguard.service
     ```
-*   **Zatrzymanie usługi:**
+*   **Stop Service:**
     ```bash
     sudo systemctl stop spaceguard.service
     ```
-*   **Ręczne uruchomienie usługi:**
+*   **Start Service:**
     ```bash
     sudo systemctl start spaceguard.service
     ```
-*   **Ponowne uruchomienie usługi (np. po aktualizacji konfiguracji):**
+*   **Restart Service:**
     ```bash
     sudo systemctl restart spaceguard.service
     ```
-*   **Wyświetlenie logów diagnostycznych demona w czasie rzeczywistym:**
+*   **View Real-time Logs:**
     ```bash
     sudo journalctl -u spaceguard.service -f
     ```
 
 ---
 
-## 🌐 Dostęp do panelu graficznego
+## 🌐 Web Application Interface
 
-Gdy usługa `spaceguard` działa w tle, serwer automatycznie serwuje aplikację webową na porcie **3000**.
-Wystarczy, że otworzysz przeglądarkę pod adresem:
-👉 **`http://localhost:3000`** (lub adres IP Twojego serwera Kali/Debian, np. `http://192.168.1.100:3000`)
+When the `spaceguard` daemon is running, the management dashboard is served on port **3000**.
+Open your browser at:
+👉 **`http://localhost:3000`**
+
+---
+*SpaceGuard is created by [monx.one](https://monx.one/). All rights reserved under the Apache License 2.0.*

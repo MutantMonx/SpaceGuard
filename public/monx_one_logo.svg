@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="monxGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="50%" stop-color="#e0f2fe" />
+      <stop offset="100%" stop-color="#38bdf8" />
+    </linearGradient>
+    <filter id="outerGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <style>
+    .monx-bg-grid { stroke: rgba(56, 189, 248, 0.12); stroke-width: 1; }
+    .monx-dot { fill: rgba(56, 189, 248, 0.4); }
+    .monx-text { font-family: 'Space Grotesk', 'Rajdhani', 'Segoe UI', sans-serif; font-weight: 700; font-size: 110px; letter-spacing: -2px; }
+  </style>
+
+  <!-- Futuristic Tech Grid background -->
+  <pattern id="gridPattern" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" class="monx-bg-grid" />
+    <circle cx="0" cy="0" r="1.5" class="monx-dot" />
+  </pattern>
+  <rect width="800" height="200" fill="url(#gridPattern)" rx="16"/>
+
+  <!-- Logo text monx.one -->
+  <g transform="translate(40, 140)">
+    <!-- Glow behind text -->
+    <text x="0" y="0" class="monx-text" fill="rgba(56,189,248,0.35)" filter="url(#outerGlow)">monx<tspan fill="#38bdf8">.one</tspan></text>
+    <!-- Foreground stroke text -->
+    <text x="0" y="0" class="monx-text" fill="#030712" stroke="url(#monxGlow)" stroke-width="3.5" stroke-linejoin="round">monx<tspan fill="#38bdf8" stroke="#ffffff" stroke-width="2">.one</tspan></text>
+  </g>
+</svg>

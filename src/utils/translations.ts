@@ -133,6 +133,25 @@ export const dictionary = {
     trayQuickClean: "Quick Clean (Cache & Trash)",
     trayOpenApp: "Open Full SpaceGuard Dashboard",
 
+    // Interactive Treemap & Disk Space Map
+    tabTreemap: "8. Interactive Space Map",
+    treemapTitle: "INTERACTIVE DISK SPACE TREEMAP & FILE MAPPER",
+    treemapSubtitle: "Comprehensive visual mapping of ALL directories, applications, containers, downloads, and USB ingests occupying storage.",
+    treemapViewFolders: "Folder Hierarchy View",
+    treemapViewApps: "Applications & Ingests View",
+    treemapHoverTitle: "DISK OCCUPANCY METRICS",
+    treemapCreatedDate: "First Discovered:",
+    treemapUpdatedDate: "Last Updated:",
+    treemapLocation: "Path:",
+    treemapCategory: "Category:",
+    treemapRisk: "Cleanup Risk:",
+    contextInspectGraph: "🔍 Inspect Dependencies in Graph",
+    contextQuickClean: "⚡ Quick Clean / Purge",
+    contextCopyPath: "📁 Copy Path to Clipboard",
+    contextSafeguard: "🛡️ Add to Exclude List",
+    contextDeepScan: "🧹 Run Target Scan",
+    brandingText: "Created by monx.one. All rights reserved under Apache 2.0.",
+
     // Language Toggle
     langEn: "English",
     langPl: "Polski",
@@ -263,6 +282,25 @@ export const dictionary = {
     trayStatusWarning: "Wysokie Zużycie Dysku",
     trayQuickClean: "Szybkie Czyszczenie (Cache & Kosz)",
     trayOpenApp: "Otwórz Pełny Panel SpaceGuard",
+
+    // Interactive Treemap & Disk Space Map
+    tabTreemap: "8. Interaktywna Mapa Dysku",
+    treemapTitle: "INTERAKTYWNA MAPA PRZESTRZENI DYSKOWEJ I ZBIORÓW",
+    treemapSubtitle: "Kompleksowe wizualne mapowanie WSZYSTKICH katalogów, aplikacji, kontenerów, plików pobranych i danych z USB zajmujących dysk.",
+    treemapViewFolders: "Widok Katalogów Systemowych",
+    treemapViewApps: "Widok Aplikacji i Zbiorów",
+    treemapHoverTitle: "METRYKI ZAJĘTOŚCI DYSKU",
+    treemapCreatedDate: "Data Utworzenia / Pojawienia się:",
+    treemapUpdatedDate: "Data Ostatniej Modyfikacji:",
+    treemapLocation: "Ścieżka:",
+    treemapCategory: "Kategoria:",
+    treemapRisk: "Poziom Ryzyka:",
+    contextInspectGraph: "🔍 Analizuj Zależności w Grafie",
+    contextQuickClean: "⚡ Szybkie Czyszczenie / Usuń",
+    contextCopyPath: "📁 Kopiuj Ścieżkę do Schowka",
+    contextSafeguard: "🛡️ Dodaj do Chronionych",
+    contextDeepScan: "🧹 Skanuj Ten Zasób",
+    brandingText: "Stworzone przez monx.one. Wszelkie prawa zastrzeżone na licencji Apache 2.0.",
 
     // Language Toggle
     langEn: "English",

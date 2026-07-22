@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PackageInfo, DiskStatus, Recommendation, DockerImage, DockerContainer } from '../types';
+import { PackageInfo, DiskStatus, Recommendation, DockerImage, DockerContainer, DiskMapItem } from '../types';
 
 // Raw base packages to initialize the database state
 const INITIAL_PACKAGES: PackageInfo[] = [
@@ -715,6 +715,306 @@ class SpaceGuardSimulator {
 
   public getDiskStatus(): DiskStatus {
     return this.disk;
+  }
+
+  public getDiskMap(mode: 'folders' | 'applications' = 'applications'): DiskMapItem[] {
+    const totalUsedMb = this.disk.usedGb * 1024;
+
+    if (mode === 'folders') {
+      const dockerTotalMb = (this.disk.dockerSizeMb || 0) + (this.disk.podmanSizeMb || 0);
+      const varMb = (this.disk.cacheSizeMb || 0) + dockerTotalMb + 8200;
+      
+      const customDownloadsMb = this.packages
+        .filter(p => p.status === 'installed' && (p.isCustomFootprint || p.installMethod === 'wget' || p.installMethod === 'curl'))
+        .reduce((sum, p) => sum + (p.actualSizeKb / 1024), 0);
+      const homeMb = (this.disk.trashSizeMb || 0) + customDownloadsMb + 8400;
+
+      const aptPkgsMb = this.packages
+        .filter(p => p.status === 'installed' && !p.isCustomFootprint)
+        .reduce((sum, p) => sum + (p.actualSizeKb / 1024), 0);
+      const usrMb = aptPkgsMb + 14200;
+
+      const optMb = 4600;
+      const tmpMb = 3280;
+      const libMb = 2150;
+      const etcMb = 1250;
+
+      const folders: DiskMapItem[] = [
+        {
+          id: 'dir-usr',
+          name: '/usr (System Apps, Binaries & Shared Data)',
+          path: '/usr',
+          sizeMb: Math.round(usrMb),
+          sizeGb: parseFloat((usrMb / 1024).toFixed(2)),
+          percentageOfUsed: parseFloat(((usrMb / totalUsedMb) * 100).toFixed(1)),
+          type: 'folder' as const,
+          category: 'System Hierarchy',
+          createdAt: '2025-08-01T06:00:00.000Z',
+          updatedAt: new Date().toISOString(),
+          itemCount: 42500,
+          riskLevel: 'high' as const,
+          canPurge: false,
+          description: 'Core system binaries, desktop packages, shared documentations, and application data.'
+        },
+        {
+          id: 'dir-var',
+          name: '/var (APT Caches, Container Layers, Logs & DBs)',
+          path: '/var',
+          sizeMb: Math.round(varMb),
+          sizeGb: parseFloat((varMb / 1024).toFixed(2)),
+          percentageOfUsed: parseFloat(((varMb / totalUsedMb) * 100).toFixed(1)),
+          type: 'folder' as const,
+          category: 'System Caches & Containers',
+          createdAt: '2025-08-01T06:00:00.000Z',
+          updatedAt: new Date().toISOString(),
+          itemCount: 18400,
+          riskLevel: 'medium' as const,
+          canPurge: true,
+          description: 'APT package archive cache, Docker/Podman overlay2 storage, system logs, and PostgreSQL databases.'
+        },
+        {
+          id: 'dir-home',
+          name: '/home (User Downloads, Ingests, Trash & Configs)',
+          path: '/home',
+          sizeMb: Math.round(homeMb),
+          sizeGb: parseFloat((homeMb / 1024).toFixed(2)),
+          percentageOfUsed: parseFloat(((homeMb / totalUsedMb) * 100).toFixed(1)),
+          type: 'folder' as const,
+          category: 'User Home & Storage',
+          createdAt: '2025-08-01T06:05:00.000Z',
+          updatedAt: new Date().toISOString(),
+          itemCount: 12900,
+          riskLevel: 'low' as const,
+          canPurge: true,
+          description: 'User home directories containing manual wget/curl downloads, USB imports, local caches, and trash bin.'
+        },
+        {
+          id: 'dir-opt',
+          name: '/opt (Standalone Suites & Custom Packages)',
+          path: '/opt',
+          sizeMb: Math.round(optMb),
+          sizeGb: parseFloat((optMb / 1024).toFixed(2)),
+          percentageOfUsed: parseFloat(((optMb / totalUsedMb) * 100).toFixed(1)),
+          type: 'folder' as const,
+          category: 'Third-Party Software',
+          createdAt: '2025-09-12T10:00:00.000Z',
+          updatedAt: new Date().toISOString(),
+          itemCount: 3100,
+          riskLevel: 'low' as const,
+          canPurge: true,
+          description: 'Third-party add-on software packages, standalone tools, and unzipped application bundles.'
+        },
+        {
+          id: 'dir-tmp',
+          name: '/tmp (Temporary Ingests & Transient Files)',
+          path: '/tmp',
+          sizeMb: Math.round(tmpMb),
+          sizeGb: parseFloat((tmpMb / 1024).toFixed(2)),
+          percentageOfUsed: parseFloat(((tmpMb / totalUsedMb) * 100).toFixed(1)),
+          type: 'folder' as const,
+          category: 'Temporary Storage',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          itemCount: 850,
+          riskLevel: 'none' as const,
+          canPurge: true,
+          description: 'Temporary files, FTP drop-off uploads, and transient processing caches created during runtime.'
+        },
+        {
+          id: 'dir-lib-boot',
+          name: '/lib & /boot (Kernel Images & OS Drivers)',
+          path: '/lib',
+          sizeMb: Math.round(libMb),
+          sizeGb: parseFloat((libMb / 1024).toFixed(2)),
+          percentageOfUsed: parseFloat(((libMb / totalUsedMb) * 100).toFixed(1)),
+          type: 'folder' as const,
+          category: 'Kernel & Core Drivers',
+          createdAt: '2025-08-01T06:00:00.000Z',
+          updatedAt: '2026-04-18T10:00:00.000Z',
+          itemCount: 5200,
+          riskLevel: 'high' as const,
+          canPurge: false,
+          description: 'Kernel images, initial RAM disk images, bootloader scripts, and essential hardware drivers.'
+        },
+        {
+          id: 'dir-etc-srv',
+          name: '/etc & /srv (System Configs & Web Services)',
+          path: '/etc',
+          sizeMb: Math.round(etcMb),
+          sizeGb: parseFloat((etcMb / 1024).toFixed(2)),
+          percentageOfUsed: parseFloat(((etcMb / totalUsedMb) * 100).toFixed(1)),
+          type: 'folder' as const,
+          category: 'Configurations & Services',
+          createdAt: '2025-08-01T06:00:00.000Z',
+          updatedAt: new Date().toISOString(),
+          itemCount: 2400,
+          riskLevel: 'high' as const,
+          canPurge: false,
+          description: 'System-wide configuration files, daemon settings, and server data directories.'
+        }
+      ];
+
+      return folders.sort((a, b) => b.sizeMb - a.sizeMb);
+    }
+
+    const items: DiskMapItem[] = [];
+
+    // 1. Installed packages & custom downloads
+    for (const pkg of this.packages) {
+      if (pkg.status === 'installed') {
+        const sizeMb = parseFloat((pkg.actualSizeKb / 1024).toFixed(1));
+        items.push({
+          id: `app-${pkg.name}`,
+          name: pkg.name,
+          path: pkg.createdFiles && pkg.createdFiles.length > 0 ? pkg.createdFiles[0] : `/usr/share/${pkg.name}`,
+          sizeMb,
+          sizeGb: parseFloat((sizeMb / 1024).toFixed(3)),
+          percentageOfUsed: parseFloat(((sizeMb / totalUsedMb) * 100).toFixed(2)),
+          type: pkg.isCustomFootprint ? 'user_data' : 'application',
+          category: pkg.section || 'utilities',
+          createdAt: pkg.installedAt || '2025-09-01T00:00:00.000Z',
+          updatedAt: pkg.lastUsedAt || new Date().toISOString(),
+          riskLevel: pkg.rollbackRisk,
+          canPurge: !pkg.isSystem,
+          dependencies: pkg.dependencies,
+          description: pkg.description
+        });
+      }
+    }
+
+    // 2. Docker Images & Containers
+    for (const img of this.dockerImages) {
+      items.push({
+        id: `docker-img-${img.id}`,
+        name: `Docker Image: ${img.repository}:${img.tag}`,
+        path: `/var/lib/docker/overlay2/${img.id}`,
+        sizeMb: img.sizeMb,
+        sizeGb: parseFloat((img.sizeMb / 1024).toFixed(3)),
+        percentageOfUsed: parseFloat(((img.sizeMb / totalUsedMb) * 100).toFixed(2)),
+        type: 'container',
+        category: 'Docker Layer',
+        createdAt: img.created,
+        updatedAt: img.created,
+        riskLevel: img.isDangling ? 'none' : 'low',
+        canPurge: true,
+        description: img.isDangling ? 'Dangling unreferenced image layer.' : 'Docker container base image.'
+      });
+    }
+
+    for (const c of this.dockerContainers) {
+      items.push({
+        id: `docker-cnt-${c.id}`,
+        name: `Docker Container: ${c.name}`,
+        path: `/var/lib/docker/containers/${c.id}`,
+        sizeMb: c.sizeMb,
+        sizeGb: parseFloat((c.sizeMb / 1024).toFixed(3)),
+        percentageOfUsed: parseFloat(((c.sizeMb / totalUsedMb) * 100).toFixed(2)),
+        type: 'container',
+        category: 'Docker Writable Layer',
+        createdAt: '2026-06-01T00:00:00.000Z',
+        updatedAt: new Date().toISOString(),
+        riskLevel: c.status === 'exited' ? 'none' : 'medium',
+        canPurge: c.status === 'exited',
+        description: `Writable layer for container ${c.name} (${c.status}).`
+      });
+    }
+
+    // 3. Podman Images & Containers
+    for (const img of this.podmanImages) {
+      items.push({
+        id: `podman-img-${img.id}`,
+        name: `Podman Image: ${img.repository}:${img.tag}`,
+        path: `/var/lib/containers/storage/${img.id}`,
+        sizeMb: img.sizeMb,
+        sizeGb: parseFloat((img.sizeMb / 1024).toFixed(3)),
+        percentageOfUsed: parseFloat(((img.sizeMb / totalUsedMb) * 100).toFixed(2)),
+        type: 'container',
+        category: 'Podman Layer',
+        createdAt: img.created,
+        updatedAt: img.created,
+        riskLevel: img.isDangling ? 'none' : 'low',
+        canPurge: true,
+        description: img.isDangling ? 'Dangling Podman image layer.' : 'Podman container base image.'
+      });
+    }
+
+    // 4. APT Cache & System Trash
+    if (this.disk.cacheSizeMb > 0) {
+      items.push({
+        id: 'cache-apt',
+        name: 'APT Archive Cache (.deb packages)',
+        path: '/var/cache/apt/archives',
+        sizeMb: this.disk.cacheSizeMb,
+        sizeGb: parseFloat((this.disk.cacheSizeMb / 1024).toFixed(3)),
+        percentageOfUsed: parseFloat(((this.disk.cacheSizeMb / totalUsedMb) * 100).toFixed(2)),
+        type: 'cache',
+        category: 'Package Manager Cache',
+        createdAt: '2026-01-01T00:00:00.000Z',
+        updatedAt: new Date().toISOString(),
+        riskLevel: 'none',
+        canPurge: true,
+        description: 'Downloaded .deb installation files kept for offline fallback.'
+      });
+    }
+
+    if (this.disk.trashSizeMb > 0) {
+      items.push({
+        id: 'trash-system',
+        name: 'System Trash Bin (Freed Files)',
+        path: '/home/kali/.local/share/Trash',
+        sizeMb: this.disk.trashSizeMb,
+        sizeGb: parseFloat((this.disk.trashSizeMb / 1024).toFixed(3)),
+        percentageOfUsed: parseFloat(((this.disk.trashSizeMb / totalUsedMb) * 100).toFixed(2)),
+        type: 'trash',
+        category: 'User Trash',
+        createdAt: '2026-05-01T00:00:00.000Z',
+        updatedAt: new Date().toISOString(),
+        riskLevel: 'none',
+        canPurge: true,
+        description: 'Files deleted by users pending permanent erasure.'
+      });
+    }
+
+    // 5. USB / Custom File Ingest
+    items.push({
+      id: 'usb-mount-ingest',
+      name: 'USB Import & External Media Drop',
+      path: '/media/kali/USB_DRIVE_01/forensic_dumps',
+      sizeMb: 1850,
+      sizeGb: 1.81,
+      percentageOfUsed: parseFloat(((1850 / totalUsedMb) * 100).toFixed(2)),
+      type: 'usb_external',
+      category: 'External Ingest / USB',
+      createdAt: '2026-07-10T11:20:00.000Z',
+      updatedAt: '2026-07-21T18:40:00.000Z',
+      riskLevel: 'none',
+      canPurge: true,
+      description: 'Files ingested from USB flash drive or external FTP drop.'
+    });
+
+    // 6. Operating System Base Core
+    const mappedMb = items.reduce((sum, item) => sum + item.sizeMb, 0);
+    const remainingOsMb = Math.max(0, totalUsedMb - mappedMb);
+
+    if (remainingOsMb > 0) {
+      items.push({
+        id: 'os-system-core',
+        name: 'Debian/Kali Core System Filesystem',
+        path: '/lib/x86_64-linux-gnu',
+        sizeMb: Math.round(remainingOsMb),
+        sizeGb: parseFloat((remainingOsMb / 1024).toFixed(2)),
+        percentageOfUsed: parseFloat(((remainingOsMb / totalUsedMb) * 100).toFixed(2)),
+        type: 'system_core',
+        category: 'Operating System Core',
+        createdAt: '2025-08-01T06:00:00.000Z',
+        updatedAt: new Date().toISOString(),
+        riskLevel: 'high',
+        canPurge: false,
+        description: 'Core Linux kernel, init system, PAM authentication, and essential C libraries.'
+      });
+    }
+
+    return items.sort((a, b) => b.sizeMb - a.sizeMb);
   }
 
   public simulateExternalInstallation(): { type: string; name: string; sizeMb: number } {
